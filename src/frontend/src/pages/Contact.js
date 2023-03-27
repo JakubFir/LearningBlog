@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {sendEmail} from "../client";
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import {successNotification} from "../notifications/Notifications";
 
 export const Contact = () => {
     const [formStatus, setFormStatus] = React.useState('Send');
@@ -24,6 +25,7 @@ export const Contact = () => {
         sendEmail(conFom)
             .then(() => {
                 console.log(conFom);
+                successNotification("mail successfully send")
             })
             .catch(err => {
                 console.log(err);

@@ -1,12 +1,15 @@
 import {Button, Col, Drawer, Form, Input, Row,} from 'antd';
-import {addCommentToPost} from "./client";
-import {successNotification, errorNotification} from "./Notifications";
+import {addCommentToPost} from "../client";
+import {successNotification, errorNotification} from "../notifications/Notifications";
 
 function CommentDrawerForm({open, setOpen, postId}) {
     const [form] = Form.useForm();
+    const jwtToken = localStorage.getItem("jwt");
+    const decodedToken = JSON.parse(atob(jwtToken.split('.')[1]));
+    const userId = decodedToken.userId;
 
     const onFinish = comment => {
-        addCommentToPost(postId, comment)
+        addCommentToPost(postId, comment, userId)
             .then(() => {
                 form.resetFields();
                 successNotification("Comment added to post")
@@ -41,19 +44,7 @@ function CommentDrawerForm({open, setOpen, postId}) {
                     title: "",
                     post: ""
                 }}
-                hideRequiredMark
             >
-                <Row gutter={16}>
-                    <Col span={12}>
-                        <Form.Item
-                            name="username"
-                            label="Username"
-                            rules={[{required: true}]}
-                        >
-                            <Input placeholder="here goes title"/>
-                        </Form.Item>
-                    </Col>
-                </Row>
                 <Row gutter={16}>
                     <Col span={12}>
                         <Form.Item
@@ -83,5 +74,5 @@ function CommentDrawerForm({open, setOpen, postId}) {
             </Form>
         </Drawer>
     );
-};
+}
 export default CommentDrawerForm;

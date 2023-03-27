@@ -1,9 +1,23 @@
 import {Header} from "antd/es/layout/layout";
 import {Button, Menu} from "antd";
-import React from "react";
-import {Link} from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {Link, useNavigate} from "react-router-dom";
+import {successNotification} from "../notifications/Notifications";
 
 export function BlogNavi() {
+    const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem("jwt"));
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        setIsLoggedIn(localStorage.getItem("jwt"));
+    }, [localStorage.getItem("jwt")]);
+
+    function handleLogout() {
+        localStorage.removeItem('jwt');
+        navigate('/login');
+        successNotification("sucesfully logged out")
+    }
+
     return (
         <>
             <Header
@@ -34,6 +48,18 @@ export function BlogNavi() {
                                 Contact
                             </Button>
                         </Link>
+
+                        {isLoggedIn ? (
+                            <Button type="primary" shape="round" onClick={handleLogout}>
+                                Logout
+                            </Button>
+                        ) : (
+                            <Link to="/login">
+                                <Button type="primary" shape="round">
+                                    Login
+                                </Button>
+                            </Link>
+                        )}
                     </div>
                 </Menu>
             </Header>

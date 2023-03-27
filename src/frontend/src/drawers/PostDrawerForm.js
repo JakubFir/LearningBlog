@@ -1,9 +1,11 @@
 import {Drawer, Input, Col, Form, Row, Button,} from 'antd';
-import {addNewPost, updatePost} from "./client";
+import {addNewPost, updatePost} from "../client";
 import {useEffect} from "react";
-import {successNotification,errorNotification} from "./Notifications";
+import {successNotification,errorNotification} from "../notifications/Notifications";
 
 function PostDrawerForm({showDrawer, setShowDrawer, isEditing, editingPost, fetchPosts}) {
+    const jwtToken = localStorage.getItem("jwt");
+
 
     const onClose = () => {
         setShowDrawer(false)
@@ -11,6 +13,8 @@ function PostDrawerForm({showDrawer, setShowDrawer, isEditing, editingPost, fetc
     const [form] = Form.useForm();
 
     const onFinish = post => {
+        const decodedToken = JSON.parse(atob(jwtToken.split('.')[1]));
+            const userId = decodedToken.userId;
         if (isEditing) {
             console.log(JSON.stringify(post, null, 2));
             updatePost(editingPost.id, post)
@@ -28,7 +32,7 @@ function PostDrawerForm({showDrawer, setShowDrawer, isEditing, editingPost, fetc
                 });
         } else {
             console.log(JSON.stringify(post, null, 2));
-            addNewPost(post)
+            addNewPost(post,userId)
                 .then(() => {
                     fetchPosts();
                     form.resetFields();
@@ -37,10 +41,7 @@ function PostDrawerForm({showDrawer, setShowDrawer, isEditing, editingPost, fetc
                 })
                 .catch(err => {
                     console.log(err);
-                    err.response.json().then(res => {
-                        console.log(res)
-                        errorNotification("There was an issue", res.status)
-                    })
+                        errorNotification("There was an issue", err.message,err.status)
                 });
         }
     };
@@ -84,7 +85,7 @@ function PostDrawerForm({showDrawer, setShowDrawer, isEditing, editingPost, fetc
                 title: "",
                 post: ""
             }}
-            hideRequiredMark
+
         >
             <Row gutter={16}>
                 <Col span={12}>

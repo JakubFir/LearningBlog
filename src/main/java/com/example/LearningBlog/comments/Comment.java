@@ -1,10 +1,9 @@
 package com.example.LearningBlog.comments;
 
+import com.example.LearningBlog.blogUser.BlogUser;
 import com.example.LearningBlog.post.Post;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 import lombok.*;
-
-import javax.persistence.*;
 import java.util.Date;
 
 @ToString
@@ -34,8 +33,16 @@ public class Comment {
     private Date dateOfPublishing = new Date();
     @ManyToOne
     @JoinColumn(name = "POST_ID")
-    @JsonIgnoreProperties("postComments")
     private Post post;
+    @ManyToOne
+    @JoinColumn(name = "USER_ID")
+    private BlogUser blogUser;
 
+    public Comment(Long commentId, String username, String commentBody, Date dateOfPublishing) {
+        this.commentId = commentId;
+        this.username = username;
+        this.commentBody = commentBody;
+        this.dateOfPublishing = dateOfPublishing;
 
+    }
 }

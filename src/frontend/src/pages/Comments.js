@@ -1,7 +1,7 @@
 import {Collapse, Divider} from 'antd';
 import {getPostComments} from "../client";
 import {useEffect, useState} from "react";
-import {errorNotification} from "../Notifications";
+import {errorNotification} from "../notifications/Notifications";
 
 const {Panel} = Collapse;
 
@@ -17,7 +17,6 @@ const App = post => {
         getPostComments(postId)
             .then(res => res.json())
             .then(data => {
-                console.log(data);
                 setComments(data);
             }).catch(err => {
             console.log(err)
@@ -40,7 +39,7 @@ const App = post => {
 
     return (
         <Collapse  defaultActiveKey={['0']} onChange={() => fetchComments(post.postId)} >
-            <Panel header="Comments" key="1">
+            <Panel header="Comments" key="1" extra={"Comments: " + comments.length}>
                 {renderComments()}
             </Panel>
         </Collapse>

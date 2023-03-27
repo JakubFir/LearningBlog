@@ -1,12 +1,9 @@
 package com.example.LearningBlog.post;
-
+import com.example.LearningBlog.blogUser.BlogUser;
 import com.example.LearningBlog.comments.Comment;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 import lombok.*;
-
-
-import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -18,7 +15,9 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table
-public class Post {
+public class  Post {
+
+
     @SequenceGenerator(
             name = "post_sequence",
             sequenceName = "post_sequence",
@@ -41,7 +40,18 @@ public class Post {
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY
     )
-    @JsonIgnoreProperties("post")
     private List<Comment> postComments;
+    @ManyToOne
+    @JoinColumn(name = "USER_ID")
+    @JsonIgnoreProperties(value = "blogUser")
+    private BlogUser blogUser;
 
-}
+    public Post(Long postId, String post, String title, Date dateOfPublishing, List<Comment> postComments) {
+        this.postId = postId;
+        this.post = post;
+        this.title = title;
+        this.dateOfPublishing = dateOfPublishing;
+        this.postComments = postComments;
+    }
+   }
+

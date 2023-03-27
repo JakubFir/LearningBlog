@@ -1,12 +1,12 @@
 import React, {useState, useEffect} from 'react'
 import {getAllPost, deletePost} from "../client";
 import {Layout, Menu, List, Button, Empty, Popconfirm} from 'antd';
-import PostDrawerForm from "../PostDrawerForm";
-import CommentDrawerForm from "../CommentDrawerForm";
+import PostDrawerForm from "../drawers/PostDrawerForm";
+import CommentDrawerForm from "../drawers/CommentDrawerForm";
 import '../App.css';
 import {FileOutlined} from "@ant-design/icons";
 import Comments from "./Comments";
-import {errorNotification, successNotification} from "../Notifications";
+import {errorNotification, successNotification} from "../notifications/Notifications";
 
 const {Content, Footer, Sider} = Layout;
 
@@ -17,7 +17,9 @@ function BlogPosts() {
     const [postId, setPostId] = useState(null);
     const [showDrawer, setShowDrawer] = useState(false)
     const [isEditing, setIsEditing] = useState(false);
+    const [isAdmin,setIsAdmin] =useState(null)
     const [editingPost, setEditingPost] = useState(null);
+    const jwtToken = localStorage.getItem("jwt");
 
     const handleEdit = (post) => {
         setEditingPost(post);
@@ -60,12 +62,21 @@ function BlogPosts() {
     useEffect(() => {
         console.log("component is mounted");
         fetchPosts();
+        if (!jwtToken) {
+
+        } else {
+            const decodedToken = JSON.parse(atob(jwtToken.split('.')[1]));
+            const userName = decodedToken.sub;
+            const isAdmin = decodedToken.role
+            console.log(isAdmin)
+            setIsAdmin(isAdmin);
+        }
     }, []);
 
     const data = posts.map(post => ({
         title: post.title,
         description: post.dateOfPublishing,
-        id: post.postId,
+        id: post.postId ,
         content: post.post,
     }));
 
@@ -120,6 +131,8 @@ function BlogPosts() {
                                     src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
                                 />
                                 <div style={{bottom: "-10px"}}>
+                                    {isAdmin === "ADMIN" && (
+                                        <>
                                     <Popconfirm title={'Are You sure you want to delete this post'}
                                                 onConfirm={() => removePost(post.id, fetchPosts)}
                                                 okText='Yes'
@@ -129,6 +142,8 @@ function BlogPosts() {
                                     <Button type="primary" shape="round" onClick={() => {
                                         handleEdit(post)
                                     }}>Edit</Button>
+                                        </>
+                                        )}
                                     <Button type="primary" shape="round" onClick={() => {
                                         handleAddingComment(post)
                                     }}>Add Comment
@@ -141,7 +156,6 @@ function BlogPosts() {
                             avatar={post.id}
                             title={<a href={post.href}>{post.title}</a>}
                             description={post.description}
-
                         />
                         {post.content}
                         <Comments postId={post.id}/>
@@ -153,10 +167,11 @@ function BlogPosts() {
         </>
     }
     return <Layout style={{minHeight: '100vh'}}>
+        {isAdmin === "ADMIN" && (
         <Sider collapsible collapsed={collapsed}
                onCollapse={setCollapsed}>
             <div className="logo"/>
-            <Menu theme="dark" mode="inline">
+                <Menu theme="dark" mode="inline">
                 <Menu.Item key="1" icon={<FileOutlined/>}>
                     <Button
                         onClick={() => setShowDrawer(!showDrawer)}
@@ -166,6 +181,7 @@ function BlogPosts() {
                 </Menu.Item>
             </Menu>
         </Sider>
+        )}
         <Layout className="site-layout">
             <Content className="content-container" style={{margin: '0 16px'}}>
                 {renderPosts()}

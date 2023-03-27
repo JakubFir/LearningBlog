@@ -3,9 +3,10 @@ import {Route, Routes } from 'react-router-dom';
 import BlogPosts from './pages/BlogPosts';
 import {AboutMe} from './pages/AboutMe';
 import {Contact} from './pages/Contact';
-import {Home} from './pages/Home';
+import Home from "./pages/Home";
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import { BlogNavi } from './pages/BlogNavi';
+import Register from "./pages/Register";
 
 const {Content } = Layout;
 
@@ -19,6 +20,7 @@ function App() {
                     <Route path="/posts" element={<BlogPosts />} />
                     <Route path="/about-me" element={<AboutMe />} />
                     <Route path="/contact" element={<Contact />} />
+                    <Route path="/login" element={<Register/>}/>
                 </Routes>
             </Content>
         </Layout>
