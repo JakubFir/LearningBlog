@@ -5,7 +5,7 @@ import com.example.LearningBlog.blogUser.BlogUserService;
 import com.example.LearningBlog.comments.Comment;
 import com.example.LearningBlog.comments.CommentDto;
 import com.example.LearningBlog.comments.CommentDtoMapper;
-import com.example.LearningBlog.errorHandler.BadCredincialsException;
+import com.example.LearningBlog.errorHandler.BadCredentialsException;
 import com.example.LearningBlog.errorHandler.CommentNotFoundException;
 import com.example.LearningBlog.errorHandler.PostNotFoundException;
 import lombok.AllArgsConstructor;
@@ -33,7 +33,7 @@ public class PostService {
     }
 
 
-    public void addPost(Post post, Long blogUserId) throws BadCredincialsException {
+    public void addPost(Post post, Long blogUserId) throws BadCredentialsException {
         blogUserService.savePost(blogUserId, post);
         post.setBlogUser(blogUserService.getBlogUser(blogUserId));
         postRepository.save(post);
