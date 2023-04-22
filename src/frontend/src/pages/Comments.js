@@ -1,7 +1,7 @@
 import {Collapse, Divider} from 'antd';
-import {getPostComments} from "../client";
 import {useEffect, useState} from "react";
 import {errorNotification} from "../notifications/Notifications";
+import {getPostComments} from "../clients/clientPost";
 
 const {Panel} = Collapse;
 

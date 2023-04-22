@@ -1,4 +1,4 @@
 package com.example.LearningBlog.errorHandler;
 
-public class CommentNotFoundException extends Exception {
+public class CommentNotFoundException extends RuntimeException {
 }

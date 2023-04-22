@@ -21,7 +21,6 @@ public class BlogUserService {
 
     public void addBlogUser(BlogUser blogUser) {
         blogUserRepository.save(blogUser);
-
     }
 
     public BlogUser getBlogUser(Long id) {
@@ -32,7 +31,7 @@ public class BlogUserService {
         return blogUserRepository.findAll().stream().map(blogUserDtoMapper::mapBlogUserToBlogUserDto).collect(Collectors.toList());
     }
 
-    public void savePost(Long blogUserId, Post post) {
+    public void addPostToUser(Long blogUserId, Post post) {
         BlogUser user = blogUserRepository.findById(blogUserId).orElseThrow();
         user.getUserPosts().add(post);
     }

@@ -1,12 +1,7 @@
 package com.example.LearningBlog.blogUser;
-
-import com.example.LearningBlog.comments.CommentDto;
-import com.example.LearningBlog.comments.CommentDtoMapper;
 import com.example.LearningBlog.post.Post;
 import com.example.LearningBlog.post.PostDto;
-import com.example.LearningBlog.post.PostDtoMapper;
-import com.example.LearningBlog.post.PostDtoToPost;
-import org.checkerframework.checker.units.qual.C;
+import com.example.LearningBlog.post.PostMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,29 +19,35 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class BlogUserServiceTest {
+    private BlogUser blogUser;
+    private Long id;
 
+    private RegisterRequest request;
     private BlogUserService blogUserService;
     @Mock
     private BlogUserRepository blogUserRepository;
     @Mock
     private PasswordEncoder passwordEncoder;
-    private final CommentDtoMapper commentDtoMapper = new CommentDtoMapper();
-    private final PostDtoMapper postDtoMapper = new PostDtoMapper(commentDtoMapper);
-    private final BlogUserDtoMapper blogUserDtoMapper = new BlogUserDtoMapper(postDtoMapper);
+
+    private final PostMapper postMapper = new PostMapper();
+    private final BlogUserDtoMapper blogUserDtoMapper = new BlogUserDtoMapper(postMapper);
 
 
     @BeforeEach
     void setUp() {
         blogUserService = new BlogUserService(blogUserRepository, passwordEncoder, blogUserDtoMapper);
+        blogUser= new BlogUser("rafal", "asd", Role.USER);
+        id = 10L;
+        request = new RegisterRequest("asd","asd");
     }
 
     @Test
     void addBlogUser() {
-        //given
-        BlogUser blogUser = new BlogUser("rafal", "asd", Role.USER);
-        //when
+        //Given
+        //When
         blogUserService.addBlogUser(blogUser);
-        //then
+
+        //Then
         ArgumentCaptor<BlogUser> blogUserArgumentCaptor = ArgumentCaptor.forClass(BlogUser.class);
         verify(blogUserRepository).save(blogUserArgumentCaptor.capture());
 
@@ -59,13 +60,12 @@ class BlogUserServiceTest {
 
     @Test
     void getBlogUser() {
-        //given
-        Long id = 10L;
-        BlogUser blogUser = new BlogUser(id, "rafal", "asd", Role.USER);
-        //when
+        //Given
+        //When
         when(blogUserRepository.findById(id)).thenReturn(Optional.of(blogUser));
         BlogUser expected = blogUserService.getBlogUser(id);
-        //then
+
+        //Then
         assertThat(expected).isEqualTo(blogUser);
     }
 
@@ -75,56 +75,73 @@ class BlogUserServiceTest {
     }
 
     @Test
-    void savePost() {
-        //given
-        Long id = 10L;
-        List<CommentDto> comments = new ArrayList<>();
-        BlogUser blogUser = new BlogUser(id, "rafal", "asd", Role.USER);
-        PostDto post = new PostDto(
+    void shouldAddPostToUser() {
+        //Given
+        PostDto  postDto = new PostDto(
                 1L,
                 "asd",
                 "asd",
-                new Date(),
-                comments);
-
-
-        PostDto post2 = new PostDto(
-                2L,
+                null,
+                false,
+                new Date());
+        PostDto  postDto2 = new PostDto(
+                1L,
                 "asd",
                 "asd",
-                new Date(),
-                comments);
+                null,
+                false,
+                new Date());
 
-        PostDtoToPost postDtoToPost = new PostDtoToPost();
-        Post resultPost = postDtoToPost.mapDtoToPost(post);
-        Post resultPost2 = postDtoToPost.mapDtoToPost(post2);
-
+        Post resultPost = postMapper.mapDtoToDomain(postDto);
+        Post resultPost2 = postMapper.mapDtoToDomain(postDto2);
         List<Post> listPosts = new ArrayList<>();
         listPosts.add(resultPost);
         blogUser.setUserPosts(listPosts);
-
         when(blogUserRepository.findById(id)).thenReturn(Optional.of(blogUser));
-        //when
-        blogUserService.savePost(id, resultPost2);
-        //then
+
+        //When
+        blogUserService.addPostToUser(id, resultPost2);
+
+        //Then
         int size = blogUser.getUserPosts().size();
         assertEquals(2,size);
     }
 
     @Test
     void registerUser() {
-        //given
-        RegisterRequest request = new RegisterRequest("asd","asd");
+        //Given
         when(passwordEncoder.encode(request.getPassword())).thenReturn(request.getPassword());
-        //when
+
+        //When
         blogUserService.registerUser(request);
 
         ArgumentCaptor<BlogUser> blogUserArgumentCaptor = ArgumentCaptor.forClass(BlogUser.class);
         verify(blogUserRepository).save(blogUserArgumentCaptor.capture());
 
         BlogUser capturedBlogUser = blogUserArgumentCaptor.getValue();
-        //then
+
+        //Then
         assertThat(capturedBlogUser.getUsername()).isEqualTo(request.getUsername());
         assertThat(capturedBlogUser.getPassword()).isEqualTo(request.getPassword());
+        assertThat(capturedBlogUser.getRole()).isEqualTo(Role.USER);
+
+    }
+
+    @Test
+    void registerAdmin(){
+        when(passwordEncoder.encode(request.getPassword())).thenReturn(request.getPassword());
+
+        //When
+        blogUserService.registerAdmin(request);
+
+        ArgumentCaptor<BlogUser> blogUserArgumentCaptor = ArgumentCaptor.forClass(BlogUser.class);
+        verify(blogUserRepository).save(blogUserArgumentCaptor.capture());
+        BlogUser capturedBlogUser = blogUserArgumentCaptor.getValue();
+
+        //Then
+        assertThat(capturedBlogUser.getUsername()).isEqualTo(request.getUsername());
+        assertThat(capturedBlogUser.getPassword()).isEqualTo(request.getPassword());
+        assertThat(capturedBlogUser.getRole()).isEqualTo(Role.ADMIN);
+
     }
 }

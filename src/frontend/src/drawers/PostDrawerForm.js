@@ -1,7 +1,7 @@
 import {Drawer, Input, Col, Form, Row, Button,} from 'antd';
-import {addNewPost, updatePost} from "../client";
 import {useEffect} from "react";
 import {successNotification,errorNotification} from "../notifications/Notifications";
+import {addNewPost, updatePost} from "../clients/clientPost";
 
 function PostDrawerForm({showDrawer, setShowDrawer, isEditing, editingPost, fetchPosts}) {
     const jwtToken = localStorage.getItem("jwt");

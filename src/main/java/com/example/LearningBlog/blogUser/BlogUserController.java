@@ -23,9 +23,9 @@ public class BlogUserController {
     }
 
     @PutMapping(path = "{userId}")
-    public void updateBlogUserRole(@RequestBody BlogUser blogUser, @PathVariable Long userId) {
+    public void updateBlogUserRole(@RequestBody BlogUserDto blogUserDto, @PathVariable Long userId) {
         BlogUser blogUserToUpdate = blogUserService.getBlogUser(userId);
-        blogUserToUpdate.setRole(blogUser.getRole());
+        blogUserToUpdate.setRole(blogUserDto.getRole());
         blogUserService.addBlogUser(blogUserToUpdate);
     }
 

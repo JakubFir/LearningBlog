@@ -43,7 +43,6 @@ public class BlogUser implements UserDetails{
             fetch = FetchType.LAZY
     )
     private List<Post> userPosts;
-
     public BlogUser(String username, String password, Role role) {
         this.username = username;
         this.password = password;
@@ -101,6 +100,12 @@ public class BlogUser implements UserDetails{
         this.username = username;
         this.password = password;
         this.role = role;
+    }
+
+    public BlogUser(String username, Role role, List<Post> userPosts) {
+        this.username = username;
+        this.role = role;
+        this.userPosts = userPosts;
     }
 }
 

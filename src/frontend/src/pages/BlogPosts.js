@@ -1,25 +1,31 @@
 import React, {useState, useEffect} from 'react'
-import {getAllPost, deletePost} from "../client";
 import {Layout, Menu, List, Button, Empty, Popconfirm} from 'antd';
 import PostDrawerForm from "../drawers/PostDrawerForm";
 import CommentDrawerForm from "../drawers/CommentDrawerForm";
 import '../App.css';
 import {FileOutlined} from "@ant-design/icons";
 import Comments from "./Comments";
-import {errorNotification, successNotification} from "../notifications/Notifications";
+import {errorNotification, infoNotification, successNotification} from "../notifications/Notifications";
+import ModerateDrawerForm from "../drawers/ModerateDrawerForm";
+import {useNavigate} from "react-router-dom";
+import {getTranslatedPosts, translatePost} from "../clients/translation";
+import {deletePost, getAllPost} from "../clients/clientPost";
 
 const {Content, Footer, Sider} = Layout;
 
 function BlogPosts() {
+    const navigate = useNavigate();
     const [posts, setPosts] = useState([]);
     const [collapsed, setCollapsed] = useState(true)
     const [open, setOpen] = useState(false);
-    const [postId, setPostId] = useState(null);
+    const [post, setPost] = useState(null);
     const [showDrawer, setShowDrawer] = useState(false)
+    const [showModerateDrawer, setModerateDrawer] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
-    const [isAdmin,setIsAdmin] =useState(null)
+    const [isAdmin, setIsAdmin] = useState(null)
     const [editingPost, setEditingPost] = useState(null);
     const jwtToken = localStorage.getItem("jwt");
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const handleEdit = (post) => {
         setEditingPost(post);
@@ -27,8 +33,22 @@ function BlogPosts() {
         setShowDrawer(true);
     }
     const handleAddingComment = (post) => {
-        setPostId(post.id)
+        setPost(post)
         setOpen(true);
+    }
+
+    const translate = (content, postId, callbacck) => {
+        console.log(content)
+        translatePost(content, postId)
+            .then(() => {
+                successNotification("Post translated sucesfully")
+                callbacck()
+            }).catch(err => {
+            console.log(err)
+            err.response.json().then(res => {
+                errorNotification("There was an issue", res.status)
+            })
+        })
     }
 
     const removePost = (postId, callback) => {
@@ -45,6 +65,13 @@ function BlogPosts() {
         })
     };
 
+    const fetchTranslations = () => {
+        getTranslatedPosts()
+            .then(() => {
+                infoNotification("posts restored to original")
+                fetchPosts()
+            })
+    }
     const fetchPosts = () =>
         getAllPost()
             .then(res => res.json())
@@ -61,12 +88,12 @@ function BlogPosts() {
 
     useEffect(() => {
         console.log("component is mounted");
-        fetchPosts();
+        fetchTranslations()
         if (!jwtToken) {
-
+            setIsLoggedIn(false)
         } else {
+            setIsLoggedIn(true);
             const decodedToken = JSON.parse(atob(jwtToken.split('.')[1]));
-            const userName = decodedToken.sub;
             const isAdmin = decodedToken.role
             console.log(isAdmin)
             setIsAdmin(isAdmin);
@@ -76,9 +103,12 @@ function BlogPosts() {
     const data = posts.map(post => ({
         title: post.title,
         description: post.dateOfPublishing,
-        id: post.postId ,
+        id: post.postId,
         content: post.post,
+        translatedPost: post.translation,
+        isTranslated: post.translated
     }));
+
 
     const renderPosts = () => {
         if (posts.length <= 0) {
@@ -90,7 +120,11 @@ function BlogPosts() {
                     editingPost={editingPost}
                     fetchPosts={fetchPosts}
                 />
-
+                <ModerateDrawerForm
+                    showModerateDrawer={showModerateDrawer}
+                    setModerateDrawer={setModerateDrawer}
+                    post={post}
+                />
                 <Empty/>
             </>
         }
@@ -98,7 +132,13 @@ function BlogPosts() {
             <CommentDrawerForm
                 open={open}
                 setOpen={setOpen}
-                postId={postId}
+                post={post}
+            />
+            <ModerateDrawerForm
+                showModerateDrawer={showModerateDrawer}
+                setModerateDrawer={setModerateDrawer}
+                post={post}
+
             />
             <PostDrawerForm
                 showDrawer={showDrawer}
@@ -119,7 +159,6 @@ function BlogPosts() {
                 dataSource={data}
                 renderItem={(post) => (
                     <List.Item
-
                         style={{overflowWrap: "break-word", wordWrap: "break-word", whiteSpace: "pre-wrap"}}
                         key={post.id}
                         actions={[]}
@@ -133,21 +172,35 @@ function BlogPosts() {
                                 <div style={{bottom: "-10px"}}>
                                     {isAdmin === "ADMIN" && (
                                         <>
-                                    <Popconfirm title={'Are You sure you want to delete this post'}
-                                                onConfirm={() => removePost(post.id, fetchPosts)}
-                                                okText='Yes'
-                                                cancelText='No'>
-                                        <Button type="primary" shape="round">Delete</Button>
-                                    </Popconfirm>
-                                    <Button type="primary" shape="round" onClick={() => {
-                                        handleEdit(post)
-                                    }}>Edit</Button>
+                                            <Popconfirm title={'Are You sure you want to delete this post'}
+                                                        onConfirm={() => removePost(post.id, fetchPosts)}
+                                                        okText='Yes'
+                                                        cancelText='No'>
+                                                <Button type="primary" shape="round">Delete</Button>
+                                            </Popconfirm>
+                                            <Button type="primary" shape="round" onClick={() => {
+                                                handleEdit(post)
+                                            }}>Edit</Button>
                                         </>
-                                        )}
-                                    <Button type="primary" shape="round" onClick={() => {
-                                        handleAddingComment(post)
-                                    }}>Add Comment
-                                    </Button>
+                                    )}
+                                    {!isLoggedIn && (
+                                        <Popconfirm
+                                            title={'You are not logged in. Do you want to add anonymous comment that need to be moderated?'}
+                                            onConfirm={() => handleAddingComment(post)}
+                                            onCancel={() => navigate('/login')}
+                                            okText='Yes'
+                                            cancelText='Login'>
+                                            <Button type="primary" shape="round">
+                                                Add Comment
+                                            </Button>
+                                        </Popconfirm>
+                                    )}
+                                    {isLoggedIn && (
+                                        <Button type="primary" shape="round" onClick={() => {
+                                            handleAddingComment(post)
+                                        }}>Add Comment
+                                        </Button>
+                                    )}
                                 </div>
                             </div>
                         }
@@ -157,10 +210,33 @@ function BlogPosts() {
                             title={<a href={post.href}>{post.title}</a>}
                             description={post.description}
                         />
-                        {post.content}
+                        <div style={{bottom: "-10px", display: "flex"}}>
+                            {!post.isTranslated && (
+                                <Button
+                                    type="primary"
+                                    shape="round"
+                                    onClick={() => {
+                                        translate(post.content, post.id, fetchPosts);
+                                    }}
+                                >
+                                    Translate
+                                </Button>
+                            )}
+                            {post.isTranslated && (
+                                <Button
+                                    type="primary"
+                                    shape="round"
+                                    onClick={() => fetchTranslations()}
+                                >
+                                    Undo Translations
+                                </Button>
+                            )}
+                        </div>
+                        <div>
+                            {post.isTranslated ? post.translatedPost : post.content}
+                        </div>
                         <Comments postId={post.id}/>
                     </List.Item>
-
                 )}
 
             />
@@ -168,19 +244,26 @@ function BlogPosts() {
     }
     return <Layout style={{minHeight: '100vh'}}>
         {isAdmin === "ADMIN" && (
-        <Sider collapsible collapsed={collapsed}
-               onCollapse={setCollapsed}>
-            <div className="logo"/>
+            <Sider collapsible collapsed={collapsed}
+                   onCollapse={setCollapsed}>
+                <div className="logo"/>
                 <Menu theme="dark" mode="inline">
-                <Menu.Item key="1" icon={<FileOutlined/>}>
-                    <Button
-                        onClick={() => setShowDrawer(!showDrawer)}
-                        type="primary" shape="round">
-                        add new post
-                    </Button>
-                </Menu.Item>
-            </Menu>
-        </Sider>
+                    <Menu.Item key="1" icon={<FileOutlined/>}>
+                        <Button
+                            onClick={() => setShowDrawer(!showDrawer)}
+                            type="primary" shape="round">
+                            Add new post
+                        </Button>
+                    </Menu.Item>
+                    <Menu.Item key="2" icon={<FileOutlined/>}>
+                        <Button
+                            onClick={() => setModerateDrawer(!showModerateDrawer)}
+                            type="primary" shape="round">
+                            New Comments
+                        </Button>
+                    </Menu.Item>
+                </Menu>
+            </Sider>
         )}
         <Layout className="site-layout">
             <Content className="content-container" style={{margin: '0 16px'}}>

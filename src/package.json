@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "@chakra-ui/react": "^2.5.2",
+    "antd": "^4.13.0",
+    "js-cookie": "^3.0.1",
+    "jwt-decode": "^3.1.2",
+    "unfetch": "^4.2.0",
+    "yup": "^1.0.2"
+  }
+}

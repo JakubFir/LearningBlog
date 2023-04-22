@@ -1,5 +1,6 @@
 package com.example.LearningBlog.security;
 
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,26 +25,19 @@ public class SecurityConfiguration {
         httpSecurity
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers(HttpMethod.PUT,"/api/v1/blog/users/**")
-                .permitAll()
-                .requestMatchers(HttpMethod.POST,"/api/v1/blog/register","/api/v1/blog/users","/api/v1/blog/register/login","/api/v1/blog/users/admin")
-                .permitAll()
-                .requestMatchers(HttpMethod.GET,"/api/v1/blog/**")
-                .permitAll()
-                .requestMatchers(
-                        HttpMethod.POST,
-                        "/api/v1/blog/contact",
-                        "/api/v1/blog/posts/{postId}/comments/{userId}"
-                )
-                .authenticated()
-                .anyRequest()
+                .requestMatchers(HttpMethod.POST, "/api/v1/blog/posts/*")
                 .hasAuthority("ADMIN")
+                .requestMatchers(HttpMethod.DELETE)
+                .hasAuthority("ADMIN")
+                .anyRequest()
+                .permitAll()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthFilter
+                        , UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
     }
 }

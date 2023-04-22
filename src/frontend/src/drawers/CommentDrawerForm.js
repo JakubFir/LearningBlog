@@ -1,26 +1,54 @@
 import {Button, Col, Drawer, Form, Input, Row,} from 'antd';
-import {addCommentToPost} from "../client";
+import {sendAnonymousCommentToKafka} from "../client";
 import {successNotification, errorNotification} from "../notifications/Notifications";
+import {useEffect, useState} from "react";
+import {addCommentToPost} from "../clients/clientComment";
 
-function CommentDrawerForm({open, setOpen, postId}) {
+function CommentDrawerForm({open, setOpen, post}) {
+
     const [form] = Form.useForm();
     const jwtToken = localStorage.getItem("jwt");
-    const decodedToken = JSON.parse(atob(jwtToken.split('.')[1]));
-    const userId = decodedToken.userId;
+    const [userId, setUserId] = useState(null)
+
+
+    useEffect(() => {
+        if (!jwtToken) {
+
+        } else {
+            const jwtToken = localStorage.getItem("jwt");
+            const decodedToken = JSON.parse(atob(jwtToken.split('.')[1]));
+            setUserId(decodedToken.userId);
+        }
+
+    }, []);
 
     const onFinish = comment => {
-        addCommentToPost(postId, comment, userId)
-            .then(() => {
-                form.resetFields();
-                successNotification("Comment added to post")
-                console.log(comment);
-            }).catch(err => {
-            console.log(err)
-            err.response.json().then(res => {
-                console.log(res)
-                errorNotification("There was an issue", res.status)
+        if (userId === null) {
+            sendAnonymousCommentToKafka(post.id, comment)
+                .then(() => {
+                    successNotification("comment send to aprove")
+                }).catch(err => {
+                console.log(err)
+                err.response.json().then(res => {
+                    console.log(res)
+                    errorNotification("There was an issue", res.status)
+                })
             })
-        });
+        } else {
+            addCommentToPost(post.id, comment, userId)
+                .then(() => {
+                    console.log(comment)
+                    form.resetFields();
+                    successNotification("Comment added to post")
+                    console.log(comment);
+                }).catch(err => {
+                console.log(err)
+                err.response.json().then(res => {
+                    console.log(res)
+                    errorNotification("There was an issue", res.status)
+                })
+            });
+        }
     }
 
     const onClose = () => {
@@ -75,4 +103,5 @@ function CommentDrawerForm({open, setOpen, postId}) {
         </Drawer>
     );
 }
+
 export default CommentDrawerForm;

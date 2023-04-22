@@ -1,10 +1,4 @@
 package com.example.LearningBlog.post;
-
-
-import com.example.LearningBlog.comments.Comment;
-import com.example.LearningBlog.comments.CommentDto;
-
-import com.example.LearningBlog.errorHandler.CommentNotFoundException;
 import com.example.LearningBlog.errorHandler.PostNotFoundException;
 
 import lombok.AllArgsConstructor;
@@ -32,8 +26,8 @@ public class PostController {
 
 
     @PostMapping(path = "{blogUserId}")
-    public void addPost(@RequestBody Post Post,@PathVariable Long blogUserId) {
-        postService.addPost(Post,blogUserId);
+    public void addPost(@RequestBody PostDto postDto,@PathVariable Long blogUserId) {
+        postService.addPost(postDto,blogUserId);
 
     }
 
@@ -44,17 +38,8 @@ public class PostController {
 
 
     @PutMapping(path = "{postId}")
-    public void updatePost(@PathVariable("postId") Long postId, @RequestBody Post post)  {
-        postService.updatePost(postId, post);
-    }
-
-    @GetMapping(path = "{postId}/comments")
-    public ResponseEntity<List<CommentDto>> getPostComments(@PathVariable("postId") Long postId) {
-        return ResponseEntity.ok(postService.getPostComments(postId));
-    }
-    @PostMapping(path = "{postId}/comments/{userId}")
-    public void addCommentToPost(@PathVariable("postId") Long postId, @RequestBody Comment comment,@PathVariable("userId") Long userId) throws CommentNotFoundException {
-        postService.addCommentToPost(postId, comment,userId);
+    public void updatePost(@PathVariable("postId") Long postId, @RequestBody PostDto postDto)  {
+        postService.updatePost(postId, postDto);
     }
 
 }
