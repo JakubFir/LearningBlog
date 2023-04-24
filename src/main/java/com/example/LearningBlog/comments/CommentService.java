@@ -22,6 +22,7 @@ public class CommentService {
 
 
     public void addCommentToPost(Long postId, CommentDto commentDto, Long userId) {
+
         Post postToAddComment = postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException("post not found"));
         BlogUser blogUser = blogUserService.getBlogUser(userId);
         Comment comment = commentDtoMapper.mapDtoToDomain(commentDto);

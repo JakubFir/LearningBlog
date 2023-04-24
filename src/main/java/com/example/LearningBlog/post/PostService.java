@@ -18,8 +18,6 @@ import java.util.stream.Collectors;
 public class PostService {
     private final BlogUserService blogUserService;
     private final PostRepository postRepository;
-
-    private final CommentRepository commentRepository;
     private final PostMapper postMapper;
 
 
@@ -37,14 +35,11 @@ public class PostService {
 
 
     public void addPost(PostDto postDto, Long blogUserId) throws BadCredentialsException {
-        Post post = postMapper.mapDtoToDomain(postDto);
         BlogUser blogUser = blogUserService.getBlogUser(blogUserId);
-
-        blogUserService.addPostToUser(blogUserId, post);
+        Post post = postMapper.mapDtoToDomain(postDto);
+        blogUser.getUserPosts().add(post);
         post.setBlogUser(blogUser);
-
         postRepository.save(post);
-
     }
 
     public void deletePost(Long postId) {

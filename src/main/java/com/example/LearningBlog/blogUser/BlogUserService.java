@@ -1,7 +1,6 @@
 package com.example.LearningBlog.blogUser;
 
 import com.example.LearningBlog.errorHandler.UsernameTakenException;
-import com.example.LearningBlog.post.Post;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,11 +30,6 @@ public class BlogUserService {
         return blogUserRepository.findAll().stream().map(blogUserDtoMapper::mapBlogUserToBlogUserDto).collect(Collectors.toList());
     }
 
-    public void addPostToUser(Long blogUserId, Post post) {
-        BlogUser user = blogUserRepository.findById(blogUserId).orElseThrow();
-        user.getUserPosts().add(post);
-    }
-
     public void registerUser(RegisterRequest request) {
         if (blogUserRepository.findBlogUsersByUsername(request.getUsername()).isPresent()) {
             throw new UsernameTakenException(request.getUsername() + " is taken");
@@ -58,5 +52,9 @@ public class BlogUserService {
                 Role.ADMIN
         );
         addBlogUser(user);
+    }
+
+    public void deleteUser(Long userId) {
+        blogUserRepository.deleteById(userId);
     }
 }

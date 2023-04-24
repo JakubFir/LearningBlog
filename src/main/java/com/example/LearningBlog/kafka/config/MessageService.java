@@ -11,8 +11,10 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -38,5 +40,28 @@ public class MessageService {
             );
             anonymousCommetsService.add(comments);
         }
+    }
+
+
+    public void sendLogs(String message) {
+        kafkaTemplate.send("logs", message);
+
+    }
+
+    public List<String> pollLogsFromTopic() {
+        List<String> logs = new ArrayList<>();
+        consumer.subscribe(Collections.singletonList("logs"));
+        boolean keepPolling = true;
+        while (keepPolling) {
+            ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
+            if (records.isEmpty()) {
+                keepPolling = false;
+            } else {
+                for (ConsumerRecord<String, String> record : records) {
+                    logs.add(record.value());
+                }
+            }
+        }
+        return logs;
     }
 }

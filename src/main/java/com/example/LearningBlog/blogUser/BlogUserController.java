@@ -1,7 +1,9 @@
 package com.example.LearningBlog.blogUser;
 
+
 import com.example.LearningBlog.security.JwtService;
 import lombok.AllArgsConstructor;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,8 +13,10 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/api/v1/blog/users")
 @AllArgsConstructor
+@EnableAspectJAutoProxy
 public class BlogUserController {
     private final BlogUserService blogUserService;
+
 
     private final JwtService jwtService;
 
@@ -29,12 +33,12 @@ public class BlogUserController {
         blogUserService.addBlogUser(blogUserToUpdate);
     }
 
-    @PostMapping (path = "/admin")
-    public ResponseEntity<?> addAdmin(@RequestBody RegisterRequest request){
+    @PostMapping(path = "/admin")
+    public ResponseEntity<?> addAdmin(@RequestBody RegisterRequest request) {
         blogUserService.registerAdmin(request);
         String token = jwtService.generateToken(request.getUsername());
         return ResponseEntity.ok()
-                .header(HttpHeaders.AUTHORIZATION,token)
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .build();
     }
 
@@ -43,9 +47,14 @@ public class BlogUserController {
         blogUserService.registerUser(request);
         String token = jwtService.generateToken(request.getUsername());
         return ResponseEntity.ok()
-                .header(HttpHeaders.AUTHORIZATION,token)
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .build();
     }
+@DeleteMapping(path = "{userId}")
+    public void deleteUser(@PathVariable Long userId){
+        blogUserService.deleteUser(userId);
+    }
+
 }
 
 

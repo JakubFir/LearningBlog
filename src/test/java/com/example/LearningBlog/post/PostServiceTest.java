@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
+import java.util.Date;
 import java.util.Optional;
 
 
@@ -51,8 +52,16 @@ class PostServiceTest {
 
     @BeforeEach
     void setUp() {
-        postService = new PostService(blogUserService, postRepository,commentRepository,postMapper);
-
+        postService = new PostService(blogUserService, postRepository,postMapper);
+        postDto = new PostDto(
+                1L,
+                "asd",
+                "asd",
+                null,
+                false,
+                new Date());
+        post = postMapper.mapDtoToDomain(postDto);
+        id = 1L;
     }
 
     @Test
