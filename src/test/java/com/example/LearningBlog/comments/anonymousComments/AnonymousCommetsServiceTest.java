@@ -5,6 +5,7 @@ import com.example.LearningBlog.comments.CommentDto;
 import com.example.LearningBlog.comments.CommentDtoMapper;
 import com.example.LearningBlog.comments.CommentRepository;
 import com.example.LearningBlog.post.*;
+import org.checkerframework.checker.units.qual.A;
 import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -63,7 +64,35 @@ class AnonymousCommetsServiceTest {
     }
 
     @Test
+    void addAnonymousComment() {
+        //Given
+        AnonymousComments anonymousComment = new AnonymousComments(1L, "asd", "ASD", new Date());
+
+        //When
+        anonymousCommetsService.add(anonymousComment);
+        ArgumentCaptor<AnonymousComments> anonymousCommentsArgumentCaptor = ArgumentCaptor.forClass(AnonymousComments.class);
+        verify(anonymousCommentsRepository).save(anonymousCommentsArgumentCaptor.capture());
+        AnonymousComments anonymousComments2 = anonymousCommentsArgumentCaptor.getValue();
+
+        //Then
+        assertThat(anonymousComments2.getCommentBody()).isEqualTo(anonymousComment.getCommentBody());
+
+    }
+
+    @Test
     void getAllCommentsToApprove() {
+        //Given
+        AnonymousComments anonymousComment = new AnonymousComments(1L, "asd", "ASD", new Date());
+        List<AnonymousComments> anonymousComments = new ArrayList<>();
+        anonymousComments.add(anonymousComment);
+
+        when(anonymousCommentsRepository.findAll()).thenReturn(anonymousComments);
+
+        //When
+        List<AnonymousComments> anonymousComments1 = anonymousCommetsService.getAllCommentsToApprove();
+
+        //Then
+        assertThat(anonymousComments1.get(0).getCommentBody()).isEqualTo(anonymousComment.getCommentBody());
 
     }
 
@@ -87,6 +116,7 @@ class AnonymousCommetsServiceTest {
         //Then
         assertThat(capturedComment.getUsername())
                 .isEqualTo(post.getPostComments().get(1).getUsername());
+        assertThat(post.getPostComments().get(1).getUsername()).isEqualTo("Anonymous");
 
     }
 }

@@ -16,23 +16,17 @@ import java.util.List;
 @EnableAspectJAutoProxy
 public class BlogUserController {
     private final BlogUserService blogUserService;
-
-
     private final JwtService jwtService;
-
-
     @GetMapping
     public List<BlogUserDto> getBlogUsers() {
         return blogUserService.getAllBlogUsers();
     }
-
     @PutMapping(path = "{userId}")
     public void updateBlogUserRole(@RequestBody BlogUserDto blogUserDto, @PathVariable Long userId) {
         BlogUser blogUserToUpdate = blogUserService.getBlogUser(userId);
         blogUserToUpdate.setRole(blogUserDto.getRole());
         blogUserService.addBlogUser(blogUserToUpdate);
     }
-
     @PostMapping(path = "/admin")
     public ResponseEntity<?> addAdmin(@RequestBody RegisterRequest request) {
         blogUserService.registerAdmin(request);
@@ -41,7 +35,6 @@ public class BlogUserController {
                 .header(HttpHeaders.AUTHORIZATION, token)
                 .build();
     }
-
     @PostMapping
     public ResponseEntity<?> addUser(@RequestBody RegisterRequest request) {
         blogUserService.registerUser(request);
@@ -54,7 +47,6 @@ public class BlogUserController {
     public void deleteUser(@PathVariable Long userId){
         blogUserService.deleteUser(userId);
     }
-
 }
 
 

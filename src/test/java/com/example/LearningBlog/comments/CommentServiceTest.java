@@ -85,21 +85,33 @@ class CommentServiceTest {
 
     @Test
     void getPostComments() {
-        //given
+        //Given
         List<Comment> comments = new ArrayList<>();
         Comment comment = new Comment(1L, "asd", "asd", new Date());
         comments.add(comment);
         post.setPostComments(comments);
         when(postRepository.findById(id)).thenReturn(Optional.ofNullable(post));
 
-        //when
+        //When
         List<CommentDto> result = commentService.getPostComments(id);
 
-        //then
+        //Then
         assertThat(result.size()).isEqualTo(1);
     }
 
     @Test
     void getComments() {
+        //Given
+        List<Comment> comments = new ArrayList<>();
+        Comment comment = new Comment(1L, "asd", "asd", new Date());
+        comments.add(comment);
+        when(commentRepository.findAll()).thenReturn(comments);
+
+        //When
+        List<CommentDto> comments1 = commentService.getComments();
+
+        //Then
+        assertThat(comments1.get(0).getCommentBody()).isEqualTo(comment.getCommentBody());
+
     }
 }

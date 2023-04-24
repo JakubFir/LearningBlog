@@ -16,8 +16,6 @@ import java.util.List;
 @AllArgsConstructor
 public class CommentController {
     private final CommentService commentService;
-
-
     @PostMapping(path = "{postId}/{userId}")
     public void addCommentToPost(@PathVariable("postId") Long postId, @RequestBody CommentDto commentDto, @PathVariable("userId") Long userId) throws CommentNotFoundException {
         commentService.addCommentToPost(postId, commentDto, userId);

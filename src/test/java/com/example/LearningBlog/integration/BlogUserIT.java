@@ -120,7 +120,6 @@ public class BlogUserIT {
                         .delete("/api/v1/blog/users/{userId}", blogUser1.getUserId())
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON))
-
                 .andExpect(status().isOk());
 
         //Then

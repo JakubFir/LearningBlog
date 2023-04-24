@@ -1,6 +1,7 @@
 package com.example.LearningBlog.post;
 
 import com.example.LearningBlog.blogUser.BlogUser;
+import com.example.LearningBlog.blogUser.BlogUserRepository;
 import com.example.LearningBlog.blogUser.BlogUserService;
 import com.example.LearningBlog.blogUser.Role;
 import com.example.LearningBlog.comments.*;
@@ -14,7 +15,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -31,6 +34,8 @@ class PostServiceTest {
     private BlogUserService blogUserService;
     @Mock
     private  CommentRepository commentRepository;
+    @Mock
+    private BlogUserRepository blogUserRepository;
 
     @Mock
     private PostRepository postRepository;
@@ -53,6 +58,7 @@ class PostServiceTest {
     @BeforeEach
     void setUp() {
         postService = new PostService(blogUserService, postRepository,postMapper);
+        blogUser= new BlogUser("rafal", "asd", Role.USER);
         postDto = new PostDto(
                 1L,
                 "asd",
@@ -66,6 +72,17 @@ class PostServiceTest {
 
     @Test
     void getAllPost() {
+        //Given
+        List<Post> list = new ArrayList<>();
+        list.add(post);
+        when(postRepository.getPostsInDescOrder()).thenReturn(list);
+
+        //When
+        List<PostDto> postDtos = postService.getAllPost();
+
+        //Then
+        assertThat(postDtos.get(0).getTitle()).isEqualTo(post.getTitle());
+
     }
 
     @Test
@@ -85,7 +102,11 @@ class PostServiceTest {
     @Test
     void addPost() {
         //given
+        List<Post> posts = new ArrayList<>();
+        posts.add(post);
 
+        when(blogUserService.getBlogUser(id)).thenReturn(blogUser);
+        blogUser.setUserPosts(posts);
         //when
         postService.addPost(postDto, id);
         ArgumentCaptor<Post> postArgumentCaptor = ArgumentCaptor.forClass(Post.class);

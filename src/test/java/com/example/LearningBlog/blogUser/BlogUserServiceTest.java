@@ -1,4 +1,7 @@
 package com.example.LearningBlog.blogUser;
+
+import com.example.LearningBlog.post.Post;
+import com.example.LearningBlog.post.PostDto;
 import com.example.LearningBlog.post.PostMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +29,6 @@ class BlogUserServiceTest {
     private BlogUserRepository blogUserRepository;
     @Mock
     private PasswordEncoder passwordEncoder;
-
     private final PostMapper postMapper = new PostMapper();
     private final BlogUserDtoMapper blogUserDtoMapper = new BlogUserDtoMapper(postMapper);
 
@@ -34,9 +36,19 @@ class BlogUserServiceTest {
     @BeforeEach
     void setUp() {
         blogUserService = new BlogUserService(blogUserRepository, passwordEncoder, blogUserDtoMapper);
-        blogUser= new BlogUser("rafal", "asd", Role.USER);
+        List<Post> posts = new ArrayList<>();
+        blogUser = new BlogUser("rafal", Role.USER, posts);
+        BlogUserDto dto = blogUserDtoMapper.mapBlogUserToBlogUserDto(blogUser);
+        PostDto postDto = new PostDto(
+                1L,
+                "asd",
+                "asd",
+                null,
+                false,
+                new Date());
+        Post post = postMapper.mapDtoToDomain(postDto);
         id = 10L;
-        request = new RegisterRequest("asd","asd");
+        request = new RegisterRequest("asd", "asd");
     }
 
     @Test
@@ -68,8 +80,17 @@ class BlogUserServiceTest {
     }
 
     @Test
-    void getAllBlogUsers() {
+    void testGetAllBlogUsers() {
+        // Given
+        List<BlogUser> blogUserList = new ArrayList<>();
+        blogUserList.add(blogUser);
+        when(blogUserRepository.findAll()).thenReturn(blogUserList);
 
+        //When
+        List<BlogUserDto> blogUserDtos = blogUserService.getAllBlogUsers();
+
+        //Then
+        assertThat(blogUserDtos.get(0).getUsername()).isEqualTo(blogUser.getUsername());
     }
 
     @Test
@@ -93,7 +114,7 @@ class BlogUserServiceTest {
     }
 
     @Test
-    void registerAdmin(){
+    void registerAdmin() {
         when(passwordEncoder.encode(request.getPassword())).thenReturn(request.getPassword());
 
         //When

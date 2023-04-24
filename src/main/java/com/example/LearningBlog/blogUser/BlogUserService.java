@@ -27,7 +27,8 @@ public class BlogUserService {
     }
 
     public List<BlogUserDto> getAllBlogUsers() {
-        return blogUserRepository.findAll().stream().map(blogUserDtoMapper::mapBlogUserToBlogUserDto).collect(Collectors.toList());
+        List<BlogUser> blogUserList = blogUserRepository.findAll();
+        return blogUserList.stream().map(blogUserDtoMapper::mapBlogUserToBlogUserDto).collect(Collectors.toList());
     }
 
     public void registerUser(RegisterRequest request) {
