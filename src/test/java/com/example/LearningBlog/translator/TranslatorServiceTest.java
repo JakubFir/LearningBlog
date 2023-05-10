@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.Date;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -33,15 +33,13 @@ class TranslatorServiceTest {
 
     private TranslatorService translatorService;
     private Post post;
-    private PostDto postDto;
     private Long id;
-    private TranslationDto translationDto;
 
 
     @BeforeEach
     void setUp() {
-        translatorService = new TranslatorService(postMapper, azureClient, postService, postRepository);
-        postDto = new PostDto(
+        translatorService = new TranslatorService( azureClient, postService, postRepository);
+        PostDto postDto = new PostDto(
                 1L,
                 "asd",
                 "asd",
@@ -50,16 +48,16 @@ class TranslatorServiceTest {
                 new Date());
         post = postMapper.mapDtoToDomain(postDto);
         id = 1L;
-        translationDto = new TranslationDto("Witam");
+        TranslationDto translationDto = new TranslationDto("Witam");
     }
 
     @Test
     void translatePost() throws IOException {
         //Given
-        when(postService.getPost(id)).thenReturn(postDto);
+        when(postService.getPost(id)).thenReturn(post);
 
         //When
-        translatorService.translatePost(translationDto,id);
+        translatorService.translatePost(id);
 
         ArgumentCaptor<Post> postArgumentCaptor = ArgumentCaptor.forClass(Post.class);
         verify(postRepository).save(postArgumentCaptor.capture());

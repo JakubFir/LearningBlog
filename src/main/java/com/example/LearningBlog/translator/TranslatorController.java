@@ -1,5 +1,4 @@
 package com.example.LearningBlog.translator;
-import com.example.LearningBlog.azureTranslator.TranslationDto;
 import lombok.AllArgsConstructor;
 
 
@@ -15,8 +14,8 @@ public class TranslatorController {
     private final TranslatorService translatorService;
 
     @PostMapping(path = "{id}")
-    public void translator(@RequestBody TranslationDto text, @PathVariable Long id) throws IOException {
-        translatorService.translatePost(text, id);
+    public void translator(@PathVariable Long id) throws IOException {
+        translatorService.translatePost(id);
     }
 
     @GetMapping

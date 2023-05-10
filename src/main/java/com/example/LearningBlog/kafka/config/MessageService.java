@@ -1,7 +1,6 @@
 package com.example.LearningBlog.kafka.config;
-
-import com.example.LearningBlog.comments.CommentDto;
-import com.example.LearningBlog.comments.anonymousComments.AnonymousComments;
+import com.example.LearningBlog.comments.CommentRepository;
+import com.example.LearningBlog.comments.anonymousComments.AnonymousCommentDto;
 import com.example.LearningBlog.comments.anonymousComments.AnonymousCommetsService;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -23,25 +21,27 @@ public class MessageService {
     private final KafkaConsumer<String, String> consumer;
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final AnonymousCommetsService anonymousCommetsService;
+    private final CommentRepository commentRepository;
 
-    public void sendAnonymousCommentToKafka(Long id, CommentDto commentDto) {
-        kafkaTemplate.send("anonymousComments", id.toString(), commentDto.getCommentBody());
+
+    public void sendAnonymousCommentToKafka(Long id, AnonymousCommentDto anonymousCommentDto) {
+        int anonymousCount = commentRepository.findAll().size()+1;
+        kafkaTemplate.send("anonymousComments", id.intValue(), String.valueOf(anonymousCount), anonymousCommentDto.getCommentBody());
     }
 
     public void pollAnonymousCommentsFromTopic() {
         consumer.subscribe(Collections.singletonList("anonymousComments"));
         ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
         for (ConsumerRecord<String, String> record : records) {
-            AnonymousComments comments = new AnonymousComments(
+            AnonymousCommentDto anonymousCommentDto = new AnonymousCommentDto(
                     Long.parseLong(record.key()),
+                    (long) record.partition(),
                     record.value(),
-                    "Anonymous",
-                    new Date()
+                    "Anonymous"
             );
-            anonymousCommetsService.add(comments);
+            anonymousCommetsService.addCommentToApprove(anonymousCommentDto);
         }
     }
-
 
     public void sendLogs(String message) {
         kafkaTemplate.send("logs", message);

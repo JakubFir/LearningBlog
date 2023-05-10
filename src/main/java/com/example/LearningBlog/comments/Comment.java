@@ -9,7 +9,6 @@ import java.util.Date;
 @ToString
 @Getter
 @Setter
-@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -38,11 +37,22 @@ public class Comment {
     @JoinColumn(name = "USER_ID")
     private BlogUser blogUser;
 
-    public Comment(Long commentId, String username, String commentBody, Date dateOfPublishing) {
+    private boolean anonymous;
+    private Long anonymousId;
+
+    public Comment(Long commentId, String username, String commentBody, Date dateOfPublishing, boolean anonymous, Long anonymousId) {
         this.commentId = commentId;
         this.username = username;
         this.commentBody = commentBody;
         this.dateOfPublishing = dateOfPublishing;
-
+        this.anonymous = anonymous;
+        this.anonymousId = anonymousId;
+    }
+    public Comment(Long commentId, String username, String commentBody, Date dateOfPublishing, boolean anonymous) {
+        this.commentId = commentId;
+        this.username = username;
+        this.commentBody = commentBody;
+        this.dateOfPublishing = dateOfPublishing;
+        this.anonymous = anonymous;
     }
 }

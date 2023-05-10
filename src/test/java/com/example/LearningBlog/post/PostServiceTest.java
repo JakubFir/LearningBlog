@@ -33,11 +33,6 @@ class PostServiceTest {
     @Mock
     private BlogUserService blogUserService;
     @Mock
-    private  CommentRepository commentRepository;
-    @Mock
-    private BlogUserRepository blogUserRepository;
-
-    @Mock
     private PostRepository postRepository;
 
 
@@ -45,9 +40,6 @@ class PostServiceTest {
     private PostMapper postMapper;
 
     private PostService postService;
-
-    private CommentService commentService;
-
     private BlogUser blogUser;
     private Post post;
     private PostDto postDto;
@@ -78,7 +70,7 @@ class PostServiceTest {
         when(postRepository.getPostsInDescOrder()).thenReturn(list);
 
         //When
-        List<PostDto> postDtos = postService.getAllPost();
+        List<Post> postDtos = postService.getAllPost();
 
         //Then
         assertThat(postDtos.get(0).getTitle()).isEqualTo(post.getTitle());
@@ -91,7 +83,7 @@ class PostServiceTest {
         when(postRepository.findById(id)).thenReturn(Optional.ofNullable(post));
 
         //when
-        PostDto result = postService.getPost(id);
+        Post result = postService.getPost(id);
 
         //then
         assertThat(result.getPost()).isEqualTo(postDto.getPost());

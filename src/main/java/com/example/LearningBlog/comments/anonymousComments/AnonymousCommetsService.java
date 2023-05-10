@@ -7,35 +7,35 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class AnonymousCommetsService {
 
     private final CommentDtoMapper commentDtoMapper;
-
     private final CommentRepository commentRepository;
-
-    private final AnonymousCommentsRepository anonymousCommentsRepository;
     private final PostRepository postRepository;
 
-    public void add(AnonymousComments anonymousComments) {
-        anonymousCommentsRepository.save(anonymousComments);
+    public void addCommentToApprove(AnonymousCommentDto anonymousCommentDto) {
+        Comment commentToApprove = commentDtoMapper.mapAnonymousToDomain(anonymousCommentDto);
+        commentToApprove.setAnonymousId(anonymousCommentDto.getPostId());
+        commentToApprove.setAnonymous(true);
+        commentRepository.save(commentToApprove);
     }
 
-    public List<AnonymousComments> getAllCommentsToApprove() {
-        return anonymousCommentsRepository.findAll();
+    public List<Comment> getAllCommentsToApprove() {
+        return commentRepository.findAll().stream().filter(Comment::isAnonymous).collect(Collectors.toList());
     }
 
-    public void addAnonymousCommentToPost(Long postId, CommentDto commentDto, Long commentId) {
-        Post post = postRepository.findById(postId).orElseThrow();
-        Comment comment = commentDtoMapper.mapDtoToDomain(commentDto);
-
+    public void addAnonymousCommentToPost(AnonymousCommentDto anonymousCommentDto, Long commentId) {
+        Post post = postRepository.findById(anonymousCommentDto.getPostId()).orElseThrow();
+        anonymousCommentDto.setPostId(post.getPostId());
+        Comment comment = commentRepository.findById(commentId).orElseThrow();
         comment.setUsername("Anonymous");
         comment.setPost(post);
+        comment.setAnonymous(false);
         post.getPostComments().add(comment);
-        anonymousCommentsRepository.deleteById(commentId);
         commentRepository.save(comment);
-
     }
 }

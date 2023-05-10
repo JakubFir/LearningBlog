@@ -4,14 +4,12 @@ import com.example.LearningBlog.blogUser.BlogUser;
 import com.example.LearningBlog.blogUser.BlogUserService;
 
 
-import com.example.LearningBlog.comments.CommentRepository;
 import com.example.LearningBlog.errorHandler.BadCredentialsException;
 import com.example.LearningBlog.errorHandler.PostNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -20,17 +18,12 @@ public class PostService {
     private final PostRepository postRepository;
     private final PostMapper postMapper;
 
-
-    public List<PostDto> getAllPost() {
-        return postRepository.getPostsInDescOrder()
-                .stream().map
-                        (postMapper::mapPostToPostDto).collect(Collectors.toList());
+    public List<Post> getAllPost() {
+        return postRepository.getPostsInDescOrder();
     }
 
-    public PostDto getPost(Long postId) {
-        return postRepository.findById(postId)
-                .map(postMapper::mapPostToPostDto)
-                .orElseThrow(() -> new PostNotFoundException("not found"));
+    public Post getPost(Long postId) {
+        return postRepository.findById(postId).orElseThrow();
     }
 
 

@@ -35,7 +35,7 @@ class BlogUserServiceTest {
 
     @BeforeEach
     void setUp() {
-        blogUserService = new BlogUserService(blogUserRepository, passwordEncoder, blogUserDtoMapper);
+        blogUserService = new BlogUserService(blogUserRepository, passwordEncoder);
         List<Post> posts = new ArrayList<>();
         blogUser = new BlogUser("rafal", Role.USER, posts);
         BlogUserDto dto = blogUserDtoMapper.mapBlogUserToBlogUserDto(blogUser);
@@ -87,10 +87,10 @@ class BlogUserServiceTest {
         when(blogUserRepository.findAll()).thenReturn(blogUserList);
 
         //When
-        List<BlogUserDto> blogUserDtos = blogUserService.getAllBlogUsers();
+        List<BlogUser> blogUser1 = blogUserService.getAllBlogUsers();
 
         //Then
-        assertThat(blogUserDtos.get(0).getUsername()).isEqualTo(blogUser.getUsername());
+        assertThat(blogUser1.get(0).getUsername()).isEqualTo(blogUser.getUsername());
     }
 
     @Test

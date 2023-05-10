@@ -10,7 +10,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -30,21 +29,18 @@ public class CommentService {
 
         comment.setPost(postToAddComment);
         comment.setUsername(blogUser.getUsername());
+        comment.setAnonymous(false);
 
         commentRepository.save(comment);
         postRepository.save(postToAddComment);
     }
 
-    public List<CommentDto> getPostComments(Long postId) {
-        List<Comment> comments;
-        Post post = postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException("post not found"));
-        comments = post.getPostComments();
+    public List<Comment> getPostComments(Long postId) {
 
-        return comments.stream().map(commentDtoMapper::mapCommentToCommentDto).collect(Collectors.toList());
+        return postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException("post not found")).getPostComments();
     }
 
-    public List<CommentDto> getComments() {
-        List<Comment> comments = commentRepository.findAll();
-        return comments.stream().map(commentDtoMapper::mapCommentToCommentDto).collect(Collectors.toList());
+    public List<Comment> getComments() {
+        return commentRepository.findAll();
     }
 }

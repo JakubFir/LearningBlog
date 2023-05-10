@@ -1,13 +1,10 @@
 package com.example.LearningBlog.kafka.config;
 
 
-import com.example.LearningBlog.comments.CommentDto;
 
 
+import com.example.LearningBlog.comments.anonymousComments.AnonymousCommentDto;
 import lombok.AllArgsConstructor;
-
-import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
@@ -19,13 +16,11 @@ import java.util.List;
 @AllArgsConstructor
 @EnableScheduling
 public class MessageController {
-
     private final MessageService messageService;
 
-
     @PostMapping(path = "/comments/{id}")
-    public void sendAnonymousCommentToKafka(@PathVariable Long id, @RequestBody CommentDto commentDto) {
-        messageService.sendAnonymousCommentToKafka(id, commentDto);
+    public void sendAnonymousCommentToKafka(@PathVariable Long id, @RequestBody AnonymousCommentDto anonymousCommentDto) {
+        messageService.sendAnonymousCommentToKafka(id, anonymousCommentDto);
     }
 
     @GetMapping("/comments")

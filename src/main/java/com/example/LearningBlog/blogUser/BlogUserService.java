@@ -6,7 +6,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -14,9 +13,6 @@ import java.util.stream.Collectors;
 public class BlogUserService {
     private final BlogUserRepository blogUserRepository;
     private final PasswordEncoder passwordEncoder;
-
-    private final BlogUserDtoMapper blogUserDtoMapper;
-
 
     public void addBlogUser(BlogUser blogUser) {
         blogUserRepository.save(blogUser);
@@ -26,9 +22,8 @@ public class BlogUserService {
         return blogUserRepository.findById(id).orElseThrow();
     }
 
-    public List<BlogUserDto> getAllBlogUsers() {
-        List<BlogUser> blogUserList = blogUserRepository.findAll();
-        return blogUserList.stream().map(blogUserDtoMapper::mapBlogUserToBlogUserDto).collect(Collectors.toList());
+    public List<BlogUser> getAllBlogUsers() {
+        return blogUserRepository.findAll();
     }
 
     public void registerUser(RegisterRequest request) {

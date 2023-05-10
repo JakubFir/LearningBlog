@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
@@ -40,14 +39,13 @@ class CommentServiceTest {
     private PostMapper postMapper;
     private BlogUser blogUser;
     private Post post;
-    private PostDto postDto;
     private Long id;
 
     @BeforeEach
     void setUp() {
         commentService = new CommentService(postRepository, blogUserService, commentDtoMapper, commentRepository);
         blogUser = new BlogUser(1L, "rafal", "asd", Role.USER);
-        postDto = new PostDto(
+        PostDto postDto = new PostDto(
                 1L,
                 "asd",
                 "asd",
@@ -63,7 +61,7 @@ class CommentServiceTest {
         //Given
         when(postRepository.findById(id)).thenReturn(Optional.ofNullable(post));
         when(blogUserService.getBlogUser(1L)).thenReturn(blogUser);
-        Comment comment = new Comment(1L, "asd", "asd", new Date());
+        Comment comment = new Comment(1L, "asd", "asd", new Date(),false);
         List<Comment> comments = new ArrayList<>();
         CommentDto commentDto = commentDtoMapper.mapCommentToCommentDto(comment);
         post.setPostComments(comments);
@@ -87,13 +85,13 @@ class CommentServiceTest {
     void getPostComments() {
         //Given
         List<Comment> comments = new ArrayList<>();
-        Comment comment = new Comment(1L, "asd", "asd", new Date());
+        Comment comment = new Comment(1L, "asd", "asd", new Date(),false);
         comments.add(comment);
         post.setPostComments(comments);
         when(postRepository.findById(id)).thenReturn(Optional.ofNullable(post));
 
         //When
-        List<CommentDto> result = commentService.getPostComments(id);
+        List<Comment> result = commentService.getPostComments(id);
 
         //Then
         assertThat(result.size()).isEqualTo(1);
@@ -103,12 +101,12 @@ class CommentServiceTest {
     void getComments() {
         //Given
         List<Comment> comments = new ArrayList<>();
-        Comment comment = new Comment(1L, "asd", "asd", new Date());
+        Comment comment = new Comment(1L, "asd", "asd", new Date(),false);
         comments.add(comment);
         when(commentRepository.findAll()).thenReturn(comments);
 
         //When
-        List<CommentDto> comments1 = commentService.getComments();
+        List<Comment> comments1 = commentService.getComments();
 
         //Then
         assertThat(comments1.get(0).getCommentBody()).isEqualTo(comment.getCommentBody());

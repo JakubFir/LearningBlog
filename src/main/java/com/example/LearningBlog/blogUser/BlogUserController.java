@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = "/api/v1/blog/users")
@@ -16,10 +17,11 @@ import java.util.List;
 @EnableAspectJAutoProxy
 public class BlogUserController {
     private final BlogUserService blogUserService;
+    private final BlogUserDtoMapper blogUserDtoMapper;
     private final JwtService jwtService;
     @GetMapping
     public List<BlogUserDto> getBlogUsers() {
-        return blogUserService.getAllBlogUsers();
+        return blogUserService.getAllBlogUsers().stream().map(blogUserDtoMapper::mapBlogUserToBlogUserDto).collect(Collectors.toList());
     }
     @PutMapping(path = "{userId}")
     public void updateBlogUserRole(@RequestBody BlogUserDto blogUserDto, @PathVariable Long userId) {

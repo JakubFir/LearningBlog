@@ -1,22 +1,21 @@
 package com.example.LearningBlog.post;
+
 import com.example.LearningBlog.blogUser.BlogUser;
 import com.example.LearningBlog.comments.Comment;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.util.Date;
 import java.util.List;
 
-@ToString
 @Getter
 @Setter
-@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table
-public class  Post {
-
+public class Post {
 
     @SequenceGenerator(
             name = "post_sequence",
@@ -51,13 +50,13 @@ public class  Post {
     @JsonIgnoreProperties(value = "blogUser")
     private BlogUser blogUser;
 
-    public Post(Long postId, String post, String title,String translation, Date dateOfPublishing) {
+    public Post(Long postId, String post, String title, String translation, Date dateOfPublishing) {
         this.postId = postId;
         this.post = post;
         this.title = title;
-        this.translation=translation;
+        this.translation = translation;
         this.dateOfPublishing = dateOfPublishing;
 
     }
-   }
+}
 

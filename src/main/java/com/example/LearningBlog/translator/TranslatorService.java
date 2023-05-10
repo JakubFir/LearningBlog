@@ -3,7 +3,6 @@ package com.example.LearningBlog.translator;
 
 import com.example.LearningBlog.azureTranslator.AzureClient;
 import com.example.LearningBlog.azureTranslator.TranslationDto;
-import com.example.LearningBlog.kafka.config.MessageController;
 import com.example.LearningBlog.post.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,20 +13,18 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class TranslatorService {
-
-    private final PostMapper postMapper;
     private final AzureClient azureClient;
     private final PostService postService;
     private final PostRepository postRepository;
 
-    public void translatePost(TranslationDto text, Long id) throws IOException {
-        PostDto postDto = postService.getPost(id);
-        Post post = postMapper.mapDtoToDomain(postDto);
-        post.setTranslated(true);
+    public void translatePost(Long id) throws IOException {
+        Post post = postService.getPost(id);
+        TranslationDto translationDto = new TranslationDto(post.getPost());
         if (post.getTranslation() == null) {
-            String translatedContent = azureClient.translate(text);
+            String translatedContent = azureClient.translate(translationDto);
             post.setTranslation(translatedContent);
         }
+        post.setTranslated(true);
         postRepository.save(post);
     }
 
