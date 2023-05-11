@@ -16,13 +16,13 @@ public class KafkaTopicConfig {
     @Bean
     public NewTopic logs() {
         return TopicBuilder.name("logs")
-                .partitions(100)
                 .build();
     }
 
     @Bean
     public NewTopic anonymousComments() {
         return TopicBuilder.name("anonymousComments")
+                .partitions(100)
                 .build();
     }
 
