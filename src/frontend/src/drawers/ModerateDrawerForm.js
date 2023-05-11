@@ -43,7 +43,6 @@ function ModerateDrawerForm({showModerateDrawer, setModerateDrawer}) {
         id: comment.commentId,
         commentBody: comment.commentBody,
         postId: comment.postId
-
     }))
 
     const onClose = () => {
@@ -69,6 +68,7 @@ function ModerateDrawerForm({showModerateDrawer, setModerateDrawer}) {
                         key={item.id}
                         actions={[
                             <Button onClick={() => {
+                                console.log(item.id)
                                 approveComment(item.postId, item, item.id)
                             }}>
                                 Accept

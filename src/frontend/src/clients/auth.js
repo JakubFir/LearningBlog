@@ -1,4 +1,4 @@
-import fetch from "unfetch";
+import fetch from 'unfetch';
 
 const checkStatus = response => {
     if (response.ok) {

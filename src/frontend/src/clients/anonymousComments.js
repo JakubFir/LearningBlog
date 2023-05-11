@@ -10,7 +10,7 @@ const checkStatus = response => {
     return Promise.reject(error);
 }
 export const addAnonymousCommentToPost = (postId, comment,commentId) =>
-    fetch(`api/v1/anonymous/${postId}/${commentId}`, {
+    fetch(`api/v1/comments/anonymous/${postId}/${commentId}`, {
         headers: {
             'Content-Type': 'application/json'
         },
@@ -20,6 +20,6 @@ export const addAnonymousCommentToPost = (postId, comment,commentId) =>
 
 
 export const getAnonymousComment = () =>
-    fetch(`api/v1/anonymous`)
+    fetch(`api/v1/comments/anonymous`)
         .then(checkStatus)
 
