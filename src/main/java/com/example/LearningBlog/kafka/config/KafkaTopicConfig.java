@@ -16,7 +16,7 @@ public class KafkaTopicConfig {
     @Bean
     public NewTopic logs() {
         return TopicBuilder.name("logs")
-                .partitions(1000)
+                .partitions(100)
                 .build();
     }
 

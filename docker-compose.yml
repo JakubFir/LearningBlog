@@ -1,6 +1,5 @@
 version: '3.9'
 services:
-
   db:
     image: postgres
     restart: always
@@ -32,7 +31,7 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-  app:
+  backend:
     build:
       context: .
       dockerfile: Dockerfile
@@ -44,10 +43,15 @@ services:
       - zookeeper
       - broker
     environment:
-      AZURE_API_ENDPOINT: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=pl&to=en&
-      AZURE_API_HEADER_OCP_APIM_SUBSCRIPTION_KEY: a68706d4b500406d8f617a2e4e40626b
-      AZURE_API_HEADER_CONTENT_TYPE: application/json
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/blogdatabase
       SPRING_KAFKA_BOOTSTRAP_SERVERS: broker:29092
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: password
+
+  frontend:
+      build:
+        context: ./src/frontend
+        dockerfile: Dockerfile
+      restart: always
+      ports:
+        - "3000:3000"
