@@ -25,9 +25,7 @@ public class BlogUserController {
     }
     @PutMapping(path = "{userId}")
     public void updateBlogUserRole(@RequestBody BlogUserDto blogUserDto, @PathVariable Long userId) {
-        BlogUser blogUserToUpdate = blogUserService.getBlogUser(userId);
-        blogUserToUpdate.setRole(blogUserDto.getRole());
-        blogUserService.addBlogUser(blogUserToUpdate);
+        blogUserService.updateUser(blogUserDto,userId);
     }
     @PostMapping(path = "/admin")
     public ResponseEntity<?> addAdmin(@RequestBody RegisterRequest request) {

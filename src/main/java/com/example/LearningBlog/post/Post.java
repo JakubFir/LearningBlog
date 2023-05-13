@@ -15,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table
+@ToString
 public class Post {
 
     @SequenceGenerator(

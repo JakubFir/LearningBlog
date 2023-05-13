@@ -1,9 +1,13 @@
 package com.example.LearningBlog.integration;
+
 import com.example.LearningBlog.blogUser.BlogUser;
 import com.example.LearningBlog.blogUser.BlogUserRepository;
 import com.example.LearningBlog.blogUser.RegisterRequest;
+import com.example.LearningBlog.errorHandler.PostNotFoundException;
 import com.example.LearningBlog.post.Post;
 import com.example.LearningBlog.post.PostDto;
+import com.example.LearningBlog.post.PostMapper;
+import com.example.LearningBlog.post.PostRepository;
 import com.example.LearningBlog.security.JwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -13,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
+import org.springframework.security.core.parameters.P;
 import org.springframework.test.context.TestPropertySource;
 
 import org.springframework.test.web.servlet.MockMvc;
@@ -48,7 +53,8 @@ public class PostIT {
     private BlogUserRepository blogUserRepository;
     @Autowired
     private ObjectMapper objectMapper;
-
+    @Autowired
+    private PostRepository postRepository;
 
 
     @Test
@@ -69,15 +75,22 @@ public class PostIT {
         blogUser.setUserPosts(list);
         String token = jwtService.generateToken(request.getUsername());
 
-        ResultActions perform = mockMvc.perform(post("/api/v1/blog/posts/{blogUserId}", 1L)
+        ResultActions perform = mockMvc.perform(post("/api/v1/blog/posts/{blogUserId}", blogUser.getUserId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                         .content(objectMapper.writeValueAsString(postDto)))
                 .andExpect(status().isOk());
 
         //Then
+        Post savedPost = postRepository.findById(postDto.getPostId()).orElseThrow();
+        assertThat(savedPost).isNotNull();
         assertThat(blogUser.getUserPosts().get(0).getPost()).isEqualTo("asd");
         assertThat(blogUser.getUserPosts().size()).isEqualTo(1);
+
+        postRepository.deleteById(savedPost.getPostId());
+        blogUser.setUserPosts(null);
+        blogUserRepository.deleteById(blogUser.getUserId());
+
     }
 
     @Test
@@ -86,7 +99,7 @@ public class PostIT {
         //Given
         RegisterRequest request = new RegisterRequest("Rafał", "asd");
         List<Post> list = new ArrayList<>();
-        PostDto postDto = new PostDto(1L, "asd", "asd", "asd", false, new Date());
+        PostDto postDto = new PostDto(2L, "asd", "asd", "asd", false, new Date());
 
         //When
         ResultActions perform1 = mockMvc.perform(post("/api/v1/blog/users/admin")
@@ -98,14 +111,17 @@ public class PostIT {
         blogUser.setUserPosts(list);
         String token = jwtService.generateToken(request.getUsername());
 
-        ResultActions perform = mockMvc.perform(post("/api/v1/blog/posts/{blogUserId}", 1L)
+        ResultActions perform = mockMvc.perform(post("/api/v1/blog/posts/{blogUserId}", blogUser.getUserId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                         .content(objectMapper.writeValueAsString(postDto)))
                 .andExpect(status().isOk());
 
+        Post savedPost = postRepository.findById(postDto.getPostId()).orElseThrow();
 
-        MvcResult getPost = mockMvc.perform(get("/api/v1/blog/posts/{postId}", 1L)
+        assertThat(savedPost).isNotNull();
+
+        MvcResult getPost = mockMvc.perform(get("/api/v1/blog/posts/{postId}", savedPost.getPostId())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -115,16 +131,15 @@ public class PostIT {
 
         //Then
         assertThat(postDto.getTitle()).isEqualTo(actual.getTitle());
+
+        postRepository.deleteById(actual.getPostId());
     }
-
-
 
     @Test
-    void delete(){
+    void delete() {
 
 
     }
-
 
 
 }

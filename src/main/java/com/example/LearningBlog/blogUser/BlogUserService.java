@@ -53,4 +53,10 @@ public class BlogUserService {
     public void deleteUser(Long userId) {
         blogUserRepository.deleteById(userId);
     }
+
+    public void updateUser(BlogUserDto blogUserDto, Long userId) {
+       BlogUser userToUpdate = blogUserRepository.findById(userId).orElseThrow(() -> new UsernameTakenException("user not found"));
+       userToUpdate.setRole(blogUserDto.getRole());
+       blogUserRepository.save(userToUpdate);
+    }
 }

@@ -15,10 +15,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -28,6 +24,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -61,6 +58,7 @@ public class BlogUserIT {
         BlogUser blogUser1 = blogUserRepository.findBlogUsersByUsername(request.getUsername()).orElseThrow();
         assertThat(blogUser1.getUsername()).isEqualTo(request.getUsername());
         assertThat(blogUser1.getRole()).isEqualTo(Role.USER);
+        blogUserRepository.deleteById(blogUser1.getUserId());
     }
 
     @Test
@@ -78,6 +76,7 @@ public class BlogUserIT {
         BlogUser blogUser1 = blogUserRepository.findBlogUsersByUsername(request.getUsername()).orElseThrow();
         assertThat(blogUser1.getUsername()).isEqualTo(request.getUsername());
         assertThat(blogUser1.getRole()).isEqualTo(Role.ADMIN);
+        blogUserRepository.deleteById(blogUser1.getUserId());
     }
 
     @Test
@@ -92,15 +91,19 @@ public class BlogUserIT {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)));
 
-        ResultActions perform2 = mockMvc.perform(put("/api/v1/blog/users/{userId}", 1L)
+        BlogUser blogUserToUpdate = blogUserRepository.findBlogUsersByUsername(request.getUsername()).orElseThrow();
+
+
+        ResultActions perform2 = mockMvc.perform(put("/api/v1/blog/users/{userId}", blogUserToUpdate.getUserId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(blogUserDto)));
 
+        BlogUser resultBlogUser = blogUserRepository.findBlogUsersByUsername(request.getUsername()).orElseThrow();
         //Then
         perform2.andExpect(status().isOk());
-        BlogUser blogUser1 = blogUserRepository.findBlogUsersByUsername(request.getUsername()).orElseThrow();
-        assertThat(blogUser1.getUsername()).isEqualTo(request.getUsername());
-        assertThat(blogUser1.getRole()).isEqualTo(Role.USER);
+        assertThat(resultBlogUser.getUsername()).isEqualTo(request.getUsername());
+        assertThat(resultBlogUser.getRole()).isEqualTo(Role.USER);
+        blogUserRepository.deleteById(resultBlogUser.getUserId());
     }
 
     @Test
@@ -127,6 +130,7 @@ public class BlogUserIT {
         Optional<BlogUser> exists2 = blogUserRepository.findBlogUsersByUsername(request.getUsername());
         assertThat(exists2).isEmpty();
     }
+
 
 }
 
