@@ -93,7 +93,6 @@ public class BlogUserIT {
 
         BlogUser blogUserToUpdate = blogUserRepository.findBlogUsersByUsername(request.getUsername()).orElseThrow();
 
-
         ResultActions perform2 = mockMvc.perform(put("/api/v1/blog/users/{userId}", blogUserToUpdate.getUserId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(blogUserDto)));
