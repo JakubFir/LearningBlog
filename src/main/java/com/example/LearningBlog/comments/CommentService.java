@@ -30,13 +30,13 @@ public class CommentService {
         comment.setPost(postToAddComment);
         comment.setUsername(blogUser.getUsername());
         comment.setAnonymous(false);
+        comment.setBlogUser(blogUser);
 
         commentRepository.save(comment);
         postRepository.save(postToAddComment);
     }
 
     public List<Comment> getPostComments(Long postId) {
-
         return postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException("post not found")).getPostComments();
     }
 

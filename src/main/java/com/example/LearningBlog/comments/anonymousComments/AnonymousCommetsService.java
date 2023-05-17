@@ -28,10 +28,10 @@ public class AnonymousCommetsService {
         return commentRepository.findAll().stream().filter(Comment::isAnonymous).collect(Collectors.toList());
     }
 
-    public void addAnonymousCommentToPost(AnonymousCommentDto anonymousCommentDto, Long commentId) {
+    public void addAnonymousCommentToPost(AnonymousCommentDto anonymousCommentDto) {
         Post post = postRepository.findById(anonymousCommentDto.getPostId()).orElseThrow();
         anonymousCommentDto.setPostId(post.getPostId());
-        Comment comment = commentRepository.findById(commentId).orElseThrow();
+        Comment comment = commentRepository.findById(anonymousCommentDto.getCommentId()).orElseThrow();
         comment.setUsername("Anonymous");
         comment.setPost(post);
         comment.setAnonymous(false);

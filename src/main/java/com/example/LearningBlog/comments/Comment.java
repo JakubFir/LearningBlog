@@ -36,10 +36,10 @@ public class Comment {
     @ManyToOne
     @JoinColumn(name = "USER_ID")
     private BlogUser blogUser;
-
+    @Column
     private boolean anonymous;
+    @Column
     private Long anonymousId;
-
     public Comment(Long commentId, String username, String commentBody, Date dateOfPublishing, boolean anonymous, Long anonymousId) {
         this.commentId = commentId;
         this.username = username;

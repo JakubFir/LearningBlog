@@ -8,5 +8,4 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    void deleteByCommentId(Long id);
 }

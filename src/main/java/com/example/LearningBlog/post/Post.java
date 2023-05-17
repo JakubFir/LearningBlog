@@ -41,23 +41,20 @@ public class Post {
             fetch = FetchType.LAZY
     )
     private List<Comment> postComments;
-
+    @Column
     private boolean translated;
-
     @Column
     private String translation;
     @ManyToOne
     @JoinColumn(name = "USER_ID")
     @JsonIgnoreProperties(value = "blogUser")
     private BlogUser blogUser;
-
     public Post(Long postId, String post, String title, String translation, Date dateOfPublishing) {
         this.postId = postId;
         this.post = post;
         this.title = title;
         this.translation = translation;
         this.dateOfPublishing = dateOfPublishing;
-
     }
 }
 

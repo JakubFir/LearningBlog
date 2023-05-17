@@ -17,9 +17,9 @@ public class AnonymousCommentsController {
     private AnonymousCommetsService anonymousCommetsService;
     private final CommentDtoMapper commentDtoMapper;
 
-    @PostMapping(path = "{postId}/{commentId}")
-    public void addAnonymousCommentToPost(@RequestBody AnonymousCommentDto anonymousCommentDto, @PathVariable("commentId") Long commentId) {
-        anonymousCommetsService.addAnonymousCommentToPost(anonymousCommentDto, commentId);
+    @PostMapping(path = "{postId}")
+    public void addAnonymousCommentToPost(@RequestBody AnonymousCommentDto anonymousCommentDto) {
+        anonymousCommetsService.addAnonymousCommentToPost(anonymousCommentDto);
     }
 
     @GetMapping

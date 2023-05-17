@@ -100,7 +100,7 @@ class AnonymousCommetsServiceTest {
         AnonymousCommentDto anonymousComment = new AnonymousCommentDto(1L, 1L,"ASD", "asd");
 
         //When
-        anonymousCommetsService.addAnonymousCommentToPost(anonymousComment, id);
+        anonymousCommetsService.addAnonymousCommentToPost(anonymousComment);
         ArgumentCaptor<Comment> commentArgumentCaptor = ArgumentCaptor.forClass(Comment.class);
         verify(commentRepository).save(commentArgumentCaptor.capture());
         Comment capturedComment = commentArgumentCaptor.getValue();
