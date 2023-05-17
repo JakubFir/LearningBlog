@@ -9,8 +9,8 @@ const checkStatus = response => {
     error.response = response;
     return Promise.reject(error);
 }
-export const addAnonymousCommentToPost = (postId, comment,commentId) =>
-    fetch(`api/v1/comments/anonymous/${postId}/${commentId}`, {
+export const addAnonymousCommentToPost = (postId, comment) =>
+    fetch(`api/v1/comments/anonymous/${postId}`, {
         headers: {
             'Content-Type': 'application/json'
         },

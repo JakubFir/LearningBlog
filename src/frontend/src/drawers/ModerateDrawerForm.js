@@ -15,8 +15,8 @@ function ModerateDrawerForm({showModerateDrawer, setModerateDrawer}) {
         }
     }, [showModerateDrawer]);
 
-    const approveComment = (postId, comment, commentId) => {
-        addAnonymousCommentToPost(postId, comment, commentId)
+    const approveComment = (postId, comment) => {
+        addAnonymousCommentToPost(postId, comment)
             .then(() => {
                 getCommentsToApprove()
                 successNotification("Comment added to post")
@@ -40,9 +40,10 @@ function ModerateDrawerForm({showModerateDrawer, setModerateDrawer}) {
     }
 
     const data = comments.map(comment => ({
-        id: comment.commentId,
+        commentId: comment.commentId,
         commentBody: comment.commentBody,
         postId: comment.postId
+
     }))
 
     const onClose = () => {
@@ -65,11 +66,10 @@ function ModerateDrawerForm({showModerateDrawer, setModerateDrawer}) {
                 bordered
                 renderItem={(item) => (
                     <List.Item
-                        key={item.id}
+                        key={item.commentId}
                         actions={[
                             <Button onClick={() => {
-                                console.log(item.id)
-                                approveComment(item.postId, item, item.id)
+                                approveComment(item.postId, item)
                             }}>
                                 Accept
                             </Button>
@@ -80,7 +80,7 @@ function ModerateDrawerForm({showModerateDrawer, setModerateDrawer}) {
                                 <Avatar
                                     src="https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png"/>
                             }
-                            title={item.id}
+                            title={item.commentId}
                             description={item.commentBody}
                         />
                     </List.Item>

@@ -24,7 +24,6 @@ function CommentDrawerForm({open, setOpen, post}) {
 
     const onFinish = comment => {
         if (userId === null) {
-            console.log(comment)
             sendAnonymousCommentToKafka(post.id, comment)
                 .then(() => {
                     successNotification("comment send to aprove")
