@@ -10,9 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class KafkaTopicConfig {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaTopicConfig.class);
-
     @Bean
     public NewTopic logs() {
         return TopicBuilder.name("logs")

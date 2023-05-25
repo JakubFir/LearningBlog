@@ -31,7 +31,7 @@ class CommentServiceTest {
     @Mock
     private BlogUserService blogUserService;
     @InjectMocks
-    private CommentDtoMapper commentDtoMapper;
+    private CommentMapper commentMapper;
     @Mock
     private CommentRepository commentRepository;
     private CommentService commentService;
@@ -43,7 +43,7 @@ class CommentServiceTest {
 
     @BeforeEach
     void setUp() {
-        commentService = new CommentService(postRepository, blogUserService, commentDtoMapper, commentRepository);
+        commentService = new CommentService(postRepository, blogUserService, commentMapper, commentRepository);
         blogUser = new BlogUser(1L, "rafal", "asd", Role.USER);
         PostDto postDto = new PostDto(
                 1L,
@@ -63,7 +63,7 @@ class CommentServiceTest {
         when(blogUserService.getBlogUser(1L)).thenReturn(blogUser);
         Comment comment = new Comment(1L, "asd", "asd", new Date(),false);
         List<Comment> comments = new ArrayList<>();
-        CommentDto commentDto = commentDtoMapper.mapCommentToCommentDto(comment);
+        CommentDto commentDto = commentMapper.mapCommentToCommentDto(comment);
         post.setPostComments(comments);
 
         //When

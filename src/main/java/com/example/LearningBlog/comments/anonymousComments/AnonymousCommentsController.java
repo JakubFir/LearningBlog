@@ -2,7 +2,7 @@ package com.example.LearningBlog.comments.anonymousComments;
 
 
 
-import com.example.LearningBlog.comments.CommentDtoMapper;
+import com.example.LearningBlog.comments.CommentMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class AnonymousCommentsController {
 
     private AnonymousCommetsService anonymousCommetsService;
-    private final CommentDtoMapper commentDtoMapper;
+    private final CommentMapper commentMapper;
 
     @PostMapping(path = "{postId}")
     public void addAnonymousCommentToPost(@RequestBody AnonymousCommentDto anonymousCommentDto) {
@@ -24,6 +24,6 @@ public class AnonymousCommentsController {
 
     @GetMapping
     public List<AnonymousCommentDto> findAllCommentsToApprove() {
-        return anonymousCommetsService.getAllCommentsToApprove().stream().map(commentDtoMapper::mapDomainToAnonymous).collect(Collectors.toList());
+        return anonymousCommetsService.getAllCommentsToApprove().stream().map(commentMapper::mapDomainToAnonymous).collect(Collectors.toList());
     }
 }

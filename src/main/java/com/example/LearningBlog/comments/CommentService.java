@@ -16,7 +16,7 @@ import java.util.List;
 public class CommentService {
     private final PostRepository postRepository;
     private final BlogUserService blogUserService;
-    private final CommentDtoMapper commentDtoMapper;
+    private final CommentMapper commentMapper;
     private final CommentRepository commentRepository;
 
 
@@ -24,7 +24,7 @@ public class CommentService {
 
         Post postToAddComment = postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException("post not found"));
         BlogUser blogUser = blogUserService.getBlogUser(userId);
-        Comment comment = commentDtoMapper.mapDtoToDomain(commentDto);
+        Comment comment = commentMapper.mapDtoToDomain(commentDto);
         postToAddComment.getPostComments().add(comment);
 
         comment.setPost(postToAddComment);

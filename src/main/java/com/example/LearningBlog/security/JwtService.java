@@ -9,6 +9,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
@@ -19,14 +20,11 @@ import java.util.Map;
 
 
 @Service
+@RequiredArgsConstructor
 public class JwtService {
 
     private static final String SECRET_KEY = "2D4B6150645367566B58703273357638792F423F4528482B4D6251655468576D";
     private final BlogUserRepository blogUserRepository;
-
-    public JwtService(BlogUserRepository blogUserRepository) {
-        this.blogUserRepository = blogUserRepository;
-    }
 
     public String generateToken(String username) {
         return generateToken(new HashMap<>(), username);

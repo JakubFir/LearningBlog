@@ -38,14 +38,14 @@ public class AzureClient {
         String jsonTranslationBody = objectMapper.writeValueAsString(Collections.singletonList(text));
 
         HttpEntity<String> entity = new HttpEntity<>(jsonTranslationBody, httpHeaders);
-
-        ResponseEntity<String> responseEntity = restTemplate.exchange(azureConfig.getAzureTranslatorEndPoint(), HttpMethod.POST, entity, String.class);
-
-        if (responseEntity.getStatusCode().is2xxSuccessful()) {
+        System.out.println(entity);
+        try {
+            ResponseEntity<String> responseEntity = restTemplate.exchange(azureConfig.getAzureTranslatorEndPoint(), HttpMethod.POST, entity, String.class);
             responseEntityBody = responseEntity.getBody();
-            return getTranslatedTextFromResponse(responseEntityBody);
-        } else
+        } catch (ServiceUnavailableException e) {
             throw new ServiceUnavailableException("Service currently unavailable");
+        }
+        return getTranslatedTextFromResponse(responseEntityBody);
     }
 
     private String getTranslatedTextFromResponse(String responseEntityBody) throws IOException {

@@ -1,7 +1,7 @@
  package com.example.LearningBlog.comments.anonymousComments;
 
 import com.example.LearningBlog.comments.Comment;
-import com.example.LearningBlog.comments.CommentDtoMapper;
+import com.example.LearningBlog.comments.CommentMapper;
 import com.example.LearningBlog.comments.CommentRepository;
 import com.example.LearningBlog.post.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +28,7 @@ class AnonymousCommetsServiceTest {
     @Mock
     private PostRepository postRepository;
     @InjectMocks
-    private CommentDtoMapper commentDtoMapper;
+    private CommentMapper commentMapper;
     @InjectMocks
     private PostMapper postMapper;
     @Mock
@@ -37,14 +37,13 @@ class AnonymousCommetsServiceTest {
     private AnonymousCommetsService anonymousCommetsService;
 
     private Post post;
-    private PostDto postDto;
     private Long id;
 
     @BeforeEach
     void setUp() {
         anonymousCommetsService = new
-                AnonymousCommetsService(commentDtoMapper, commentRepository , postRepository);
-        postDto = new PostDto(
+                AnonymousCommetsService(commentMapper, commentRepository , postRepository);
+        PostDto postDto = new PostDto(
                 1L,
                 "asd",
                 "asd",

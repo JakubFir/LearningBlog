@@ -8,7 +8,7 @@ import java.util.Date;
 
 
 @Service
-public class CommentDtoMapper {
+public class CommentMapper {
     public Comment mapAnonymousToDomain(AnonymousCommentDto anonymousCommentDto) {
         return new Comment(
                 anonymousCommentDto.getCommentId(),

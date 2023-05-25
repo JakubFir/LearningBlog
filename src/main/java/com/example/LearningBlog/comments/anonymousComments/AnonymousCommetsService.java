@@ -13,12 +13,12 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class AnonymousCommetsService {
 
-    private final CommentDtoMapper commentDtoMapper;
+    private final CommentMapper commentMapper;
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
 
     public void addCommentToApprove(AnonymousCommentDto anonymousCommentDto) {
-        Comment commentToApprove = commentDtoMapper.mapAnonymousToDomain(anonymousCommentDto);
+        Comment commentToApprove = commentMapper.mapAnonymousToDomain(anonymousCommentDto);
         commentToApprove.setAnonymousId(anonymousCommentDto.getPostId());
         commentToApprove.setAnonymous(true);
         commentRepository.save(commentToApprove);

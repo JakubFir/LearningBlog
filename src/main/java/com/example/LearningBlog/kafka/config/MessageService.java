@@ -45,7 +45,6 @@ public class MessageService {
 
     public void sendLogs(String message) {
         kafkaTemplate.send("logs", message);
-
     }
 
     public List<String> pollLogsFromTopic() {

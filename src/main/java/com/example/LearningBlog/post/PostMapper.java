@@ -26,6 +26,5 @@ public class PostMapper {
                 post.getTranslation(),
                 post.isTranslated(),
                 post.getDateOfPublishing());
-
     }
 }
