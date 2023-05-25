@@ -22,7 +22,7 @@ const App = post => {
             console.log(err)
             err.response.json().then(res => {
                 console.log(res)
-                errorNotification("There was an issue", res.status)
+                errorNotification(res.message, res.status)
             })
         });
 

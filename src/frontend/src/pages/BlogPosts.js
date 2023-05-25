@@ -10,6 +10,7 @@ import ModerateDrawerForm from "../drawers/ModerateDrawerForm";
 import {useNavigate} from "react-router-dom";
 import {getTranslatedPosts, translatePost} from "../clients/translation";
 import {deletePost, getAllPost} from "../clients/clientPost";
+import {validateToken} from "../clients/auth";
 
 const {Content, Footer, Sider} = Layout;
 
@@ -46,7 +47,7 @@ function BlogPosts() {
             }).catch(err => {
             console.log(err)
             err.response.json().then(res => {
-                errorNotification("There was an issue", res.status)
+                errorNotification(res.message, res.status)
             })
         })
     }

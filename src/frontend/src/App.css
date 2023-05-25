@@ -22,7 +22,44 @@
     font-size: 14px;
     line-height: 1.5715;
 }
+.about-me-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 80vh;
+    background: white;
 
+}
+.profile-picture {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.profile-picture img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.skills-section {
+    margin-top: 20px;
+}
+
+.social-icons {
+    margin-top: 20px;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.github-icon,
+.linkedin-icon {
+    font-size: 50px;
+    margin-right: 20px;
+}
 .ant-drawer-body p.site-description-item-profile-p {
     display: block;
     margin-bottom: 16px;

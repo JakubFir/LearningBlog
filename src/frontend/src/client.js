@@ -29,7 +29,9 @@ export const sendAnonymousCommentToKafka = (id, comment) =>
 
 export const sendEmail = mail =>
     fetch("api/v1/blog/contact", {
+        ...getAuthConfig(),
         headers: {
+            ...getAuthConfig().headers,
             'Content-Type': 'application/json',
         },
         method: 'POST',

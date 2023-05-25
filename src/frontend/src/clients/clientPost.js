@@ -27,9 +27,6 @@ export const getPostComments = postId =>
     fetch(`api/v1/comments/${postId}`)
         .then(checkStatus)
 
-
-
-
 export const deletePost = postId =>
     fetch(`api/v1/blog/posts/${postId}`, {
         ...getAuthConfig(),
@@ -39,7 +36,6 @@ export const deletePost = postId =>
         },
         method: 'DELETE',
     }).then(checkStatus);
-
 
 export const updatePost = (postId, updatedPost) =>
     fetch(`api/v1/blog/posts/${postId}`, {
@@ -51,7 +47,6 @@ export const updatePost = (postId, updatedPost) =>
         method: 'PUT',
         body: JSON.stringify(updatedPost),
     }).then(checkStatus)
-
 
 export const addNewPost = (post,userId) =>
     fetch(`api/v1/blog/posts/${userId}`, {

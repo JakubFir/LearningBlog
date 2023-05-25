@@ -1,12 +1,14 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {sendEmail} from "../client";
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
-import {successNotification} from "../notifications/Notifications";
+import {errorNotification, successNotification} from "../notifications/Notifications";
+import {useNavigate} from "react-router-dom";
 
 export const Contact = () => {
     const [formStatus, setFormStatus] = React.useState('Send');
     const [disabled, isDisabled] = useState(false)
-
+    const jwtToken = localStorage.getItem("jwt");
+    const navigate = useNavigate();
     const onClick = () => {
         isDisabled(true);
     };
@@ -28,7 +30,16 @@ export const Contact = () => {
                 successNotification("mail successfully send")
             })
             .catch(err => {
-                console.log(err);
+                err.response.json().then(res => {
+                    if (!localStorage.getItem("jwt")) {
+                        errorNotification("login to use emial", res.status)
+                        navigate('/login')
+                    } else {
+                        errorNotification(res.message, res.status)
+                        navigate('/login')
+                        localStorage.clear();
+                    }
+                })
             });
     };
 
@@ -46,7 +57,7 @@ export const Contact = () => {
                         </div>
                         <div className="mb-3">
                             <label className="form-label" htmlFor="title">
-                               Title
+                                Title
                             </label>
                             <input className="form-control" type="text" id="title" required/>
                         </div>

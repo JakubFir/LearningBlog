@@ -3,9 +3,10 @@ import {sendAnonymousCommentToKafka} from "../client";
 import {successNotification, errorNotification} from "../notifications/Notifications";
 import {useEffect, useState} from "react";
 import {addCommentToPost} from "../clients/clientComment";
+import {useNavigate} from "react-router-dom";
 
 function CommentDrawerForm({open, setOpen, post}) {
-
+    const navigate = useNavigate();
     const [form] = Form.useForm();
     const jwtToken = localStorage.getItem("jwt");
     const [userId, setUserId] = useState(null)
@@ -13,7 +14,6 @@ function CommentDrawerForm({open, setOpen, post}) {
 
     useEffect(() => {
         if (!jwtToken) {
-
         } else {
             const jwtToken = localStorage.getItem("jwt");
             const decodedToken = JSON.parse(atob(jwtToken.split('.')[1]));
@@ -26,26 +26,25 @@ function CommentDrawerForm({open, setOpen, post}) {
         if (userId === null) {
             sendAnonymousCommentToKafka(post.id, comment)
                 .then(() => {
-                    successNotification("comment send to aprove")
+                    successNotification("comment send to approve")
                 }).catch(err => {
-                console.log(err)
                 err.response.json().then(res => {
-                    console.log(res)
-                    errorNotification("There was an issue", res.status)
+                    errorNotification(res.message, res.status)
                 })
             })
         } else {
             addCommentToPost(post.id, comment, userId)
                 .then(() => {
-                    console.log(comment)
                     form.resetFields();
                     successNotification("Comment added to post")
-                    console.log(comment);
                 }).catch(err => {
-                console.log(err)
                 err.response.json().then(res => {
-                    console.log(res)
-                    errorNotification("There was an issue", res.status)
+                    const resString = JSON.stringify(res);
+                    errorNotification(res.message, res.status)
+                    if (resString.includes("JWT")) {
+                        localStorage.clear();
+                        navigate('/login')
+                    }
                 })
             });
         }

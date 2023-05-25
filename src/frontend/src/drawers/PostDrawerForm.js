@@ -2,11 +2,11 @@ import {Drawer, Input, Col, Form, Row, Button,} from 'antd';
 import {useEffect} from "react";
 import {successNotification,errorNotification} from "../notifications/Notifications";
 import {addNewPost, updatePost} from "../clients/clientPost";
+import {useNavigate} from "react-router-dom";
 
 function PostDrawerForm({showDrawer, setShowDrawer, isEditing, editingPost, fetchPosts}) {
     const jwtToken = localStorage.getItem("jwt");
-
-
+    const navigate = useNavigate();
     const onClose = () => {
         setShowDrawer(false)
     };
@@ -24,12 +24,15 @@ function PostDrawerForm({showDrawer, setShowDrawer, isEditing, editingPost, fetc
                     successNotification("Post successfully edited")
                     console.log(post);
                 }).catch(err => {
-                    console.log(err);
-                    err.response.json().then(res => {
-                        console.log(res)
-                        errorNotification("There was an issue", res.status)
-                    })
-                });
+                err.response.json().then(res => {
+                    const resString = JSON.stringify(res);
+                    errorNotification(res.message, res.status)
+                    if (resString.includes("JWT")) {
+                        localStorage.clear();
+                        navigate('/login')
+                    }
+                })
+            });
         } else {
             console.log(JSON.stringify(post, null, 2));
             addNewPost(post,userId)
@@ -40,8 +43,14 @@ function PostDrawerForm({showDrawer, setShowDrawer, isEditing, editingPost, fetc
                     console.log(post);
                 })
                 .catch(err => {
-                    console.log(err);
-                        errorNotification("There was an issue", err.message,err.status)
+                    err.response.json().then(res => {
+                        const resString = JSON.stringify(res);
+                        errorNotification(res.message, res.status)
+                        if (resString.includes("JWT")) {
+                            localStorage.clear();
+                            navigate('/login')
+                        }
+                    })
                 });
         }
     };

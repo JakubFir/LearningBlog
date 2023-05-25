@@ -5,7 +5,6 @@ import {errorNotification, successNotification} from "../notifications/Notificat
 import {authonticateUser, registerUser} from "../clients/auth";
 
 const Register = () => {
-    const [form] = Form.useForm();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
@@ -20,7 +19,6 @@ const Register = () => {
             .then(response => response.json())
             .then(data => {
                 localStorage.setItem('jwt', data.token);
-                console.log(data.token)
                 successNotification("Welcome " + username)
                 navigate('/posts');
             }).catch(err => {
@@ -49,31 +47,49 @@ const Register = () => {
 
     return (
         <>
+            <div style={{ backgroundColor: 'white', minHeight: '30vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Form
-                form={form}
-                layout="vertical"
+                name="basic"
+                labelCol={{
+                    span: 8,
+                }}
+                wrapperCol={{
+                    span: 16,
+                }}
+                style={{
+                    maxWidth: 600,
+                }}
                 initialValues={{
-                    title: "",
-                    post: ""
-                }}>
+                    remember: true,
+                }}
+                autoComplete="off"
+            >
                 <Form.Item
                     name="username"
                     label="Username"
-                    rules={[{required: true, message: 'here goes title'}]}
+                    rules={[{required: true, message: 'Please input your username!'}]}
                 >
                     <Input value={username} placeholder="here goes title"
                            onChange={(e) => setUsername(e.target.value)}/>
                 </Form.Item>
+
                 <Form.Item
                     name="password"
                     label="Password"
-                    rules={[{required: true, message: 'here goes title',}]}
+                    rules={[{required: true, message:'Please input your password!',}]}
                 >
                     <Input value={password} type={"password"} onChange={(e) => setPassword(e.target.value)}/>
                 </Form.Item>
-                <Form.Item>
+
+                <Form.Item
+                    wrapperCol={{
+                        offset: 8,
+                        span: 16,
+                    }}>
+                    <div style={{ display: 'flex'}}>
                     <Button
                         onClick={() => sendLoginRequest()}
+                        style={{ marginRight: '5px' }}
                         type="primary" htmlType="submit">
                         Login
                     </Button>
@@ -82,9 +98,10 @@ const Register = () => {
                         type="primary" htmlType="submit">
                         Register
                     </Button>
+                        </div>
                 </Form.Item>
-
             </Form>
+            </div>
         </>
     );
 }
