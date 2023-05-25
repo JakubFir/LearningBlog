@@ -32,7 +32,7 @@ export const Contact = () => {
             .catch(err => {
                 err.response.json().then(res => {
                     if (!localStorage.getItem("jwt")) {
-                        errorNotification("login to use emial", res.status)
+                        errorNotification("Login to send email", res.status)
                         navigate('/login')
                     } else {
                         errorNotification(res.message, res.status)
