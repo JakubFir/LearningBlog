@@ -40,17 +40,13 @@ class PostServiceTest {
     private PostMapper postMapper;
 
     private PostService postService;
-    private BlogUser blogUser;
     private Post post;
     private PostDto postDto;
-
-
     private Long id;
 
     @BeforeEach
     void setUp() {
         postService = new PostService(blogUserService, postRepository,postMapper);
-        blogUser= new BlogUser("rafal", "asd", Role.USER);
         postDto = new PostDto(
                 1L,
                 "asd",
@@ -94,6 +90,7 @@ class PostServiceTest {
     @Test
     void addPost() {
         //given
+        BlogUser blogUser = new BlogUser("rafal", "asd", Role.USER);
         List<Post> posts = new ArrayList<>();
         posts.add(post);
 

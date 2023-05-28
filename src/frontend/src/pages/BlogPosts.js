@@ -10,7 +10,6 @@ import ModerateDrawerForm from "../drawers/ModerateDrawerForm";
 import {useNavigate} from "react-router-dom";
 import {getTranslatedPosts, translatePost} from "../clients/translation";
 import {deletePost, getAllPost} from "../clients/clientPost";
-import {validateToken} from "../clients/auth";
 
 const {Content, Footer, Sider} = Layout;
 
@@ -31,6 +30,10 @@ function BlogPosts() {
     const handleEdit = (post) => {
         setEditingPost(post);
         setIsEditing(true);
+        setShowDrawer(true);
+    }
+    const handleAddingPost = (post) => {
+        setIsEditing(false);
         setShowDrawer(true);
     }
     const handleAddingComment = (post) => {
@@ -251,7 +254,7 @@ function BlogPosts() {
                 <Menu theme="dark" mode="inline">
                     <Menu.Item key="1" icon={<FileOutlined/>}>
                         <Button
-                            onClick={() => setShowDrawer(!showDrawer)}
+                            onClick={() => handleAddingPost(post)}
                             type="primary" shape="round">
                             Add new post
                         </Button>

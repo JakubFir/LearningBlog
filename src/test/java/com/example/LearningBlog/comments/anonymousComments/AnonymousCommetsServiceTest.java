@@ -35,9 +35,7 @@ class AnonymousCommetsServiceTest {
     private CommentRepository commentRepository;
 
     private AnonymousCommetsService anonymousCommetsService;
-
     private Post post;
-    private Long id;
 
     @BeforeEach
     void setUp() {
@@ -51,7 +49,6 @@ class AnonymousCommetsServiceTest {
                 false,
                 new Date());
         post = postMapper.mapDtoToDomain(postDto);
-        id = 1L;
     }
 
     @Test
@@ -90,6 +87,7 @@ class AnonymousCommetsServiceTest {
     @Test
     void addAnonymousCommentToPost() {
         //Given
+        Long id = 1L;
         List<Comment> comments = new ArrayList<>();
         Comment comment = new Comment(1L, "asd", "asd", new Date(),true);
         comments.add(comment);

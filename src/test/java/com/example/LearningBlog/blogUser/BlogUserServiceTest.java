@@ -22,38 +22,23 @@ import static org.mockito.Mockito.when;
 class BlogUserServiceTest {
     private BlogUser blogUser;
     private Long id;
-
     private RegisterRequest request;
     private BlogUserService blogUserService;
     @Mock
     private BlogUserRepository blogUserRepository;
     @Mock
     private PasswordEncoder passwordEncoder;
-    private final PostMapper postMapper = new PostMapper();
-    private final BlogUserDtoMapper blogUserDtoMapper = new BlogUserDtoMapper(postMapper);
-
-
     @BeforeEach
     void setUp() {
         blogUserService = new BlogUserService(blogUserRepository, passwordEncoder);
-        List<Post> posts = new ArrayList<>();
-        blogUser = new BlogUser("rafal", Role.USER, posts);
-        BlogUserDto dto = blogUserDtoMapper.mapBlogUserToBlogUserDto(blogUser);
-        PostDto postDto = new PostDto(
-                1L,
-                "asd",
-                "asd",
-                null,
-                false,
-                new Date());
-        Post post = postMapper.mapDtoToDomain(postDto);
-        id = 10L;
-        request = new RegisterRequest("asd", "asd");
     }
 
     @Test
     void addBlogUser() {
         //Given
+        List<Post> posts = new ArrayList<>();
+        blogUser = new BlogUser("rafal", Role.USER, posts);
+
         //When
         blogUserService.addBlogUser(blogUser);
 
@@ -71,6 +56,9 @@ class BlogUserServiceTest {
     @Test
     void getBlogUser() {
         //Given
+        List<Post> posts = new ArrayList<>();
+        id = 10L;
+        blogUser = new BlogUser("rafal", Role.USER, posts);
         //When
         when(blogUserRepository.findById(id)).thenReturn(Optional.of(blogUser));
         BlogUser expected = blogUserService.getBlogUser(id);
@@ -82,6 +70,8 @@ class BlogUserServiceTest {
     @Test
     void testGetAllBlogUsers() {
         // Given
+        List<Post> posts = new ArrayList<>();
+        blogUser = new BlogUser("rafal", Role.USER, posts);
         List<BlogUser> blogUserList = new ArrayList<>();
         blogUserList.add(blogUser);
         when(blogUserRepository.findAll()).thenReturn(blogUserList);
@@ -96,6 +86,7 @@ class BlogUserServiceTest {
     @Test
     void registerUser() {
         //Given
+        request = new RegisterRequest("asd", "asd");
         when(passwordEncoder.encode(request.getPassword())).thenReturn(request.getPassword());
 
         //When
@@ -115,6 +106,7 @@ class BlogUserServiceTest {
 
     @Test
     void registerAdmin() {
+        request = new RegisterRequest("asd", "asd");
         when(passwordEncoder.encode(request.getPassword())).thenReturn(request.getPassword());
 
         //When
