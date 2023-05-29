@@ -24,6 +24,7 @@ To launch the project, follow these steps:
 Create two databases:
 * blogdatabase
 * blogdatabasetests
+Then:
 * `mvn clean install`
 * Navigate to the `\LearningBlog` directory.
 * Run the following command to start Docker containers:
