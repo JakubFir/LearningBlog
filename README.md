@@ -17,6 +17,7 @@ learn and consolidate knowledge from a course.
 
 * JVM
 * Docker
+* PostgreSQL
 
 ### Launching the Project
 To launch the project, follow these steps:
