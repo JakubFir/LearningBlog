@@ -2,6 +2,8 @@ package com.example.LearningBlog.integration;
 
 import com.example.LearningBlog.blogUser.*;
 
+import com.example.LearningBlog.conteiners.ContainersTest;
+import com.example.LearningBlog.conteiners.Testcontainers;
 import com.example.LearningBlog.post.PostRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -16,12 +18,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 
-@SpringBootTest
-@TestPropertySource(
-        locations = "classpath:application-it.properties"
-)
 @AutoConfigureMockMvc
-public class CommentIT {
+public class CommentIT extends Testcontainers {
 
     @Autowired
     private MockMvc mockMvc;

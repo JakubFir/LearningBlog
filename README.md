@@ -7,7 +7,7 @@ learn and consolidate knowledge from a course.
 * https://i.imgur.com/gZnoIhu.png
 ### User view:
 * https://i.imgur.com/QIWru7a.png
-#### Not looged it:
+#### Not looged in:
 * https://i.imgur.com/KHgghwb.png
 ## Pages:
 * Contact page : https://i.imgur.com/wwqezUm.png
@@ -24,6 +24,8 @@ To launch the project, follow these steps:
 Create two databases:
 * blogdatabase
 * blogdatabasetests
+
+Then:
 * Navigate to the `\LearningBlog` directory.
 * Run the following command to start Docker containers:
 

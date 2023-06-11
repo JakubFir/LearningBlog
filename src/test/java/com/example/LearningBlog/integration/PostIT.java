@@ -3,6 +3,7 @@ package com.example.LearningBlog.integration;
 import com.example.LearningBlog.blogUser.BlogUser;
 import com.example.LearningBlog.blogUser.BlogUserRepository;
 import com.example.LearningBlog.blogUser.RegisterRequest;
+import com.example.LearningBlog.conteiners.Testcontainers;
 import com.example.LearningBlog.errorHandler.PostNotFoundException;
 import com.example.LearningBlog.post.Post;
 import com.example.LearningBlog.post.PostDto;
@@ -37,13 +38,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@TestPropertySource(
-        locations = "classpath:application-it.properties"
-)
 @AutoConfigureMockMvc
-public class PostIT {
-
+public class PostIT extends Testcontainers {
 
     @Autowired
     private MockMvc mockMvc;
