@@ -74,7 +74,7 @@ public class BlogUserIT extends Testcontainers {
 
         //When
 
-        ResultActions perform = mockMvc.perform(post("/api/v1/blog/users/admin")
+         mockMvc.perform(post("/api/v1/blog/users/admin")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)));
 
@@ -98,7 +98,7 @@ public class BlogUserIT extends Testcontainers {
         RegisterRequest request = new RegisterRequest("Rafał", "asd");
 
         //When
-        ResultActions perform = mockMvc.perform(post("/api/v1/blog/users/admin")
+         mockMvc.perform(post("/api/v1/blog/users/admin")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk());

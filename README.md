@@ -7,11 +7,7 @@ learn and consolidate knowledge from a course.
 * https://i.imgur.com/gZnoIhu.png
 ### User view:
 * https://i.imgur.com/QIWru7a.png
-<<<<<<< HEAD
-#### Not looged in:
-=======
-#### Not logged in:
->>>>>>> 23b78331fd3246392b6b35ed94e210c71acd8a3f
+### Not logged in:
 * https://i.imgur.com/KHgghwb.png
 ## Pages:
 * Contact page : https://i.imgur.com/wwqezUm.png
@@ -31,10 +27,8 @@ Create two databases:
 * blogdatabasetests
 
 Then:
-<<<<<<< HEAD
 =======
 * `mvn clean install`
->>>>>>> 23b78331fd3246392b6b35ed94e210c71acd8a3f
 * Navigate to the `\LearningBlog` directory.
 * Run the following command to start Docker containers:
 

@@ -28,7 +28,7 @@ public class SecurityConfiguration {
                 .requestMatchers(HttpMethod.POST, "/api/v1/blog/posts/*")
                 .hasAuthority("ADMIN")
                 .requestMatchers(HttpMethod.DELETE)
-                .hasAuthority("ADMIN")
+                .authenticated()
                 .requestMatchers(HttpMethod.POST, "/api/v1/blog/contact")
                 .hasAuthority("USER")
                 .anyRequest()
